@@ -40,16 +40,6 @@ public class PersonServiceTest {
         person.setEmail("pagny.jerome@gmail.com");
         person.setPhone("0666131700");
 
-        Person person2 = new Person();
-        person2.setId(Long.parseLong("1"));
-        person2.setFirstName("Nicolas");
-        person2.setLastName("Pagny");
-        person2.setAddress("2 rue du coteau");
-        person2.setCity("Vernaison");
-        person2.setZip(69390);
-        person2.setEmail("pagny.jerome@gmail.com");
-        person2.setPhone("0666131700");
-
         listPerson.add(person);
 
         when(personRepository.findById(Long.parseLong("1")))
@@ -59,7 +49,7 @@ public class PersonServiceTest {
 
         doNothing().when(personRepository).deleteById(Long.parseLong("1"));
 
-        when(personRepository.save(person2)).thenReturn(person2);
+        when(personRepository.save(person)).thenReturn(person);
 
     }
 
@@ -88,7 +78,7 @@ public class PersonServiceTest {
     public void should_save_person() {
         Person person = new Person();
         person.setId(Long.parseLong("1"));
-        person.setFirstName("Nicolas");
+        person.setFirstName("Jerome");
         person.setLastName("Pagny");
         person.setAddress("2 rue du coteau");
         person.setCity("Vernaison");

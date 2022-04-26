@@ -25,4 +25,10 @@ public class PersonControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getPerson() throws Exception {
+        mockMvc.perform(get("/persons/1"))
+                .andExpect(status().isOk());
+    }
+
 }
