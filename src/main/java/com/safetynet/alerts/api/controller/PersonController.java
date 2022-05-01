@@ -3,7 +3,6 @@ package com.safetynet.alerts.api.controller;
 import com.safetynet.alerts.api.model.Person;
 import com.safetynet.alerts.api.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;

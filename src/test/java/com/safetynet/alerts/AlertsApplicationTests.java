@@ -1,13 +1,23 @@
 package com.safetynet.alerts;
 
+import com.safetynet.alerts.config.LoadDataFromDataJsonRunner;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 class AlertsApplicationTests {
 
+	@SpyBean
+	LoadDataFromDataJsonRunner myCommandRunner;
+
 	@Test
-	void contextLoads() {
+	void contextLoads() throws Exception {
+		verify(myCommandRunner,times(1)).run(any());
 	}
 
 }
