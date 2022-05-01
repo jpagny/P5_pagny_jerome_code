@@ -1,6 +1,6 @@
-package com.safetynet.alerts.api.repository;
+package com.safetynet.alerts.repository;
 
-import com.safetynet.alerts.api.model.Person;
+import com.safetynet.alerts.model.Person;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.utility.Util;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,71 +14,62 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PersonController.class)
-public class PersonControllerTest {
+@WebMvcTest(controllers = FireStationController.class)
+public class FireStationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private PersonService personService;
+    private FireStationService fireStationService;
 
     @Test
-    public void getAllPerson() throws Exception {
-        mockMvc.perform(get("/persons"))
+    public void getAllFireStation() throws Exception {
+        mockMvc.perform(get("/firestations"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getPersonById() throws Exception {
-        mockMvc.perform(get("/person/1"))
+    public void getFireStationById() throws Exception {
+        mockMvc.perform(get("/firestation/1"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void createPerson() throws Exception {
+    public void createFireStation() throws Exception {
 
-        Person person = new Person();
-        person.setLastName("xxx");
-        person.setFirstName("xxx");
-        person.setAddress("xxx");
-        person.setCity("xxx");
-        person.setZip("xxx");
-        person.setPhone("xxx");
-        person.setEmail("xxx");
+        FireStation fireStation = new FireStation();
+        fireStation.setId(Long.parseLong("1"));
+        fireStation.setAddress("29 16th St");
+        fireStation.setStation("1");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/person")
-                        .content(Util.asJsonString(person))
+                        .post("/firestation")
+                        .content(Util.asJsonString(fireStation))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void updatePerson() throws Exception {
+    public void updateFireStation() throws Exception {
 
-        Person person = new Person();
-        person.setLastName("xxx");
-        person.setFirstName("xxx");
-        person.setAddress("xxx");
-        person.setCity("xxx");
-        person.setZip("xxx");
-        person.setPhone("xxx");
-        person.setEmail("xxx");
+        FireStation fireStation = new FireStation();
+        fireStation.setStation("2");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/person/1")
-                        .content(Util.asJsonString(person))
+                        .put("/firestation/1")
+                        .content(Util.asJsonString(fireStation))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
+
     @Test
-    public void deletePerson() throws Exception {
+    public void deleteFireStation() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/person/1"))
+                        .delete("/firestation/1"))
                 .andExpect(status().isOk());
     }
 

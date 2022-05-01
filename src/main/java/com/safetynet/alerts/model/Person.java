@@ -1,4 +1,4 @@
-package com.safetynet.alerts.api.model;
+package com.safetynet.alerts.model;
 
 import lombok.Data;
 

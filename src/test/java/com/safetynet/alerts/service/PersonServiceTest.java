@@ -1,8 +1,8 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.api.model.Person;
-import com.safetynet.alerts.api.repository.PersonRepository;
-import com.safetynet.alerts.api.service.PersonService;
+import com.google.common.collect.Iterators;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,13 +32,13 @@ public class PersonServiceTest {
 
         Person person = new Person();
         person.setId(Long.parseLong("1"));
-        person.setFirstName("Jerome");
-        person.setLastName("Pagny");
-        person.setAddress("2 rue du coteau");
-        person.setCity("Vernaison");
-        person.setZip("69390");
-        person.setEmail("pagny.jerome@gmail.com");
-        person.setPhone("0666131700");
+        person.setFirstName("John");
+        person.setLastName("Rick");
+        person.setAddress("29 15th St\t");
+        person.setCity("Chicago");
+        person.setZip("365781");
+        person.setEmail("john.rick@gmail.com");
+        person.setPhone("07894235694");
 
         listPerson.add(person);
 
@@ -54,11 +53,10 @@ public class PersonServiceTest {
 
     }
 
-
     @Test
     public void should_find_all_persons() {
-        Iterable person = personService.getPersons();
-        long count = StreamSupport.stream(person.spliterator(), false).count();
+        Iterable persons = personService.getPersons();
+        long count = Iterators.size(persons.iterator());
         assertEquals(1, count);
     }
 
@@ -66,26 +64,24 @@ public class PersonServiceTest {
     public void should_find_person_by_id() {
         Optional<Person> person = personService.getPerson(Long.parseLong("1"));
         assertTrue(person.isPresent());
-        assertEquals("Jerome", person.get().getFirstName());
+        assertEquals("John", person.get().getFirstName());
     }
-
-
 
     @Test
     public void should_save_person() {
         Person person = new Person();
         person.setId(Long.parseLong("1"));
-        person.setFirstName("Jerome");
-        person.setLastName("Pagny");
-        person.setAddress("2 rue du coteau");
-        person.setCity("Vernaison");
-        person.setZip("69390");
-        person.setEmail("pagny.jerome@gmail.com");
-        person.setPhone("0666131700");
+        person.setFirstName("John");
+        person.setLastName("Rick");
+        person.setAddress("29 15th St\t");
+        person.setCity("Chicago");
+        person.setZip("365781");
+        person.setEmail("john.rick@gmail.com");
+        person.setPhone("07894235694");
 
         Person personSaved = personService.savePerson(person);
 
-        assertEquals(person,personSaved);
+        assertEquals(person, personSaved);
     }
 
     @Test

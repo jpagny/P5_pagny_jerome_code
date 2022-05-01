@@ -1,8 +1,8 @@
 package com.safetynet.alerts.repository;
 
 import com.google.common.collect.Iterators;
-import com.safetynet.alerts.api.model.Person;
-import com.safetynet.alerts.api.repository.PersonRepository;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.config.IntegrationTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

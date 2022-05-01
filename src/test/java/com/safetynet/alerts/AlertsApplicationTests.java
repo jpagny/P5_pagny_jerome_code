@@ -13,11 +13,11 @@ import static org.mockito.Mockito.verify;
 class AlertsApplicationTests {
 
 	@SpyBean
-	LoadDataFromDataJsonRunner myCommandRunner;
+	LoadDataFromDataJsonRunner loadDataFromDataJsonRunner;
 
 	@Test
 	void contextLoads() throws Exception {
-		verify(myCommandRunner,times(1)).run(any());
+		verify(loadDataFromDataJsonRunner,times(1)).run(any());
 	}
 
 }

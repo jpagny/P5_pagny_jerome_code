@@ -1,7 +1,7 @@
-package com.safetynet.alerts.api.controller;
+package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.api.model.Person;
-import com.safetynet.alerts.api.service.PersonService;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +29,7 @@ public class PersonController {
     }
 
     @PutMapping("/person/{id}")
-    public Person updateEmployee(@PathVariable("id") final Long id, @RequestBody Person personToUpdate) {
+    public Person updatePerson(@PathVariable("id") final Long id, @RequestBody Person personToUpdate) {
         Optional<Person> person = personService.getPerson(id);
 
         if (person.isPresent()) {
