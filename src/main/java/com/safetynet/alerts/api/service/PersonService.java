@@ -1,12 +1,15 @@
-package com.safetynet.alerts.service;
+package com.safetynet.alerts.api.service;
 
-import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.api.model.Person;
+import com.safetynet.alerts.api.repository.PersonRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
+@Data
 @Service
 public class PersonService {
 
@@ -21,13 +24,15 @@ public class PersonService {
         return personRepository.findAll();
     }
 
+    public Person savePerson(Person person) {
+        Person personSaved = personRepository.save(person);
+        return personSaved;
+    }
+
     public void deletePerson(final Long id) {
         personRepository.deleteById(id);
     }
 
-    public Person savePerson(Person person) {
-        Person savedPerson = personRepository.save(person);
-        return savedPerson;
-    }
+
 
 }

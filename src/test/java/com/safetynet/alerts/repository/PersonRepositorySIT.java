@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.api.model.Person;
+import com.safetynet.alerts.api.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

@@ -1,4 +1,4 @@
-package com.safetynet.alerts.model;
+package com.safetynet.alerts.api.model;
 
 import lombok.Data;
 
@@ -23,7 +23,7 @@ public class Person {
 
     private String city;
 
-    private int zip;
+    private String zip;
 
     private String phone;
 

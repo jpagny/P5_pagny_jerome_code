@@ -1,7 +1,8 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.api.model.Person;
+import com.safetynet.alerts.api.repository.PersonRepository;
+import com.safetynet.alerts.api.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class PersonServiceTest {
         person.setLastName("Pagny");
         person.setAddress("2 rue du coteau");
         person.setCity("Vernaison");
-        person.setZip(69390);
+        person.setZip("69390");
         person.setEmail("pagny.jerome@gmail.com");
         person.setPhone("0666131700");
 
@@ -68,11 +69,7 @@ public class PersonServiceTest {
         assertEquals("Jerome", person.get().getFirstName());
     }
 
-    @Test
-    public void should_delete_person_by_id() {
-        personService.deletePerson(Long.parseLong("1"));
-        verify(personRepository, times(1)).deleteById(any(Long.class));
-    }
+
 
     @Test
     public void should_save_person() {
@@ -82,13 +79,19 @@ public class PersonServiceTest {
         person.setLastName("Pagny");
         person.setAddress("2 rue du coteau");
         person.setCity("Vernaison");
-        person.setZip(69390);
+        person.setZip("69390");
         person.setEmail("pagny.jerome@gmail.com");
         person.setPhone("0666131700");
 
         Person personSaved = personService.savePerson(person);
 
         assertEquals(person,personSaved);
+    }
+
+    @Test
+    public void should_delete_person_by_id() {
+        personService.deletePerson(Long.parseLong("1"));
+        verify(personRepository, times(1)).deleteById(any(Long.class));
     }
 
 
