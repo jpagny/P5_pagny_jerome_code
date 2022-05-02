@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FireStationRepository;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +25,9 @@ public class IntegrationTestConfig implements CommandLineRunner {
 
     @Autowired
     private FireStationRepository fireStationRepository;
+
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -45,6 +50,14 @@ public class IntegrationTestConfig implements CommandLineRunner {
             List<FireStation> listFireStations = mapper.readValue(listFireStation, new TypeReference<List<FireStation>>() {
             });
             fireStationRepository.saveAll(listFireStations);
+        }
+
+        // save medicalRecord data
+        if (Iterators.size(medicalRecordRepository.findAll().iterator()) == 0){
+            String medicalRecordNodes = nodes.get("medicalrecords").toString();
+            List<MedicalRecord> listMedicalRecord = mapper.readValue(medicalRecordNodes, new TypeReference<>() {
+            });
+            medicalRecordRepository.saveAll(listMedicalRecord);
         }
 
 

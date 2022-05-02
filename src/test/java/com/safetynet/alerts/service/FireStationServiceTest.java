@@ -69,7 +69,7 @@ public class FireStationServiceTest {
     }
 
     @Test
-    public void should_delete_person_by_id() {
+    public void should_delete_fireStation_by_id() {
         fireStationService.deleteFireStation(Long.parseLong("1"));
         verify(fireStationRepository, times(1)).deleteById(any(Long.class));
     }

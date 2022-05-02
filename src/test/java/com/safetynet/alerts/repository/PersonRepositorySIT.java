@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -24,7 +25,7 @@ public class PersonRepositorySIT {
 
     @Test
     public void should_find_all_persons() {
-        Iterable person = personRepository.findAll();
+        Iterable<Person> person = personRepository.findAll();
         long count = Iterators.size(person.iterator());
         assertEquals(2, count);
     }
@@ -32,6 +33,7 @@ public class PersonRepositorySIT {
     @Test
     public void should_find_person_by_id() {
         Optional<Person> person = personRepository.findById(Long.parseLong("1"));
+        assertTrue(person.isPresent());
         assertEquals("John", person.get().getFirstName());
     }
 
