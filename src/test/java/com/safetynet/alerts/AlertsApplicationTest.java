@@ -10,7 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-class AlertsApplicationTests {
+class AlertsApplicationTest {
 
 	@SpyBean
 	LoadDataFromDataJsonRunner loadDataFromDataJsonRunner;
