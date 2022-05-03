@@ -2,7 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.utility.Util;
+import com.safetynet.alerts.utility.Utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,7 +49,7 @@ public class PersonControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/person")
-                        .content(Util.asJsonString(person))
+                        .content(Utils.asJsonString(person))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -69,7 +69,7 @@ public class PersonControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/person/1")
-                        .content(Util.asJsonString(person))
+                        .content(Utils.asJsonString(person))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

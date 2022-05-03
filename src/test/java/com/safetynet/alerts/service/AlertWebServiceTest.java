@@ -1,9 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.google.common.collect.Iterators;
-import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,9 +49,10 @@ public class AlertWebServiceTest {
     }
 
     @Test
-    public void getListEmailByCity(){
+    public void getListEmailByCity() {
         List<String> listEmail = alertWebService.getListEmailByCity("Culver");
         assertEquals(2, Iterators.size(listEmail.iterator()));
     }
+
 
 }

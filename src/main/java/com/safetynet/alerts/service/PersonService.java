@@ -32,6 +32,4 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
-
-
 }

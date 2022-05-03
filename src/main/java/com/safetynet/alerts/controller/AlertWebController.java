@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AlertWebController {
@@ -20,7 +22,8 @@ public class AlertWebController {
         return alertWebService.getListEmailByCity(city);
     }
 
-
-
-
+    @GetMapping("/fire")
+    public Map<String, Object> getPersonsAndNumberFireStationByAddress(@RequestParam String address) {
+        return alertWebService.getPersonsAndNumberFireStationByAddress(address);
+    }
 }

@@ -2,7 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.service.MedicalRecordService;
-import com.safetynet.alerts.utility.Util;
+import com.safetynet.alerts.utility.Utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,7 +54,7 @@ public class MedicalRecordControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/medicalRecord")
-                        .content(Util.asJsonString(medicalRecord))
+                        .content(Utils.asJsonString(medicalRecord))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -71,7 +71,7 @@ public class MedicalRecordControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/medicalRecord/1")
-                        .content(Util.asJsonString(medicalRecord))
+                        .content(Utils.asJsonString(medicalRecord))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

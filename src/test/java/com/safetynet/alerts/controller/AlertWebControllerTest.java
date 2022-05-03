@@ -27,4 +27,11 @@ public class AlertWebControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getPersonsAndNumberFireStationByAddress() throws Exception {
+        mockMvc.perform(get("/fire")
+                        .param("address","1509 Culver St"))
+                .andExpect(status().isOk());
+    }
+
 }

@@ -2,7 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.service.FireStationService;
-import com.safetynet.alerts.utility.Util;
+import com.safetynet.alerts.utility.Utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -45,7 +45,7 @@ public class FireStationControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/firestation")
-                        .content(Util.asJsonString(fireStation))
+                        .content(Utils.asJsonString(fireStation))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -59,7 +59,7 @@ public class FireStationControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/firestation/1")
-                        .content(Util.asJsonString(fireStation))
+                        .content(Utils.asJsonString(fireStation))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
