@@ -1,5 +1,6 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.constant.App;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
@@ -41,7 +42,6 @@ public class AlertWebService {
 
         Map<String, Object> data = new HashMap<>();
         List<Object> listOfPersons = new ArrayList<>();
-        String separator = ",";
         Optional<FireStation> fireStation = fireStationService.getFireStationByAddress(address);
 
         data.put("address", address);
@@ -55,13 +55,14 @@ public class AlertWebService {
                 StringBuilder personDataBuild = new StringBuilder();
                 Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
 
-                personDataBuild.append("first name:").append(person.getFirstName()).append(separator);
-                personDataBuild.append("last name:").append(person.getLastName()).append(separator);
-                personDataBuild.append("phone:").append(person.getPhone()).append(separator);
+                personDataBuild.append("first name:").append(person.getFirstName()).append(App.SEPARATOR);
+                personDataBuild.append("last name:").append(person.getLastName()).append(App.SEPARATOR);
+                personDataBuild.append("phone:").append(person.getPhone()).append(App.SEPARATOR);
 
                 if (medicalRecord.isPresent()) {
-                    personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy")).append(separator);
-                    personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(separator);
+                    personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(),
+                            App.DATE_FORMAT)).append(App.SEPARATOR);
+                    personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(App.SEPARATOR);
                     personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
                 }
 
@@ -77,7 +78,6 @@ public class AlertWebService {
     public List<String> getInformationPerson(String firstName, String lastName) {
 
         List<String> listOfPersons = new ArrayList<>();
-        String separator = ",";
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson ->
@@ -88,14 +88,15 @@ public class AlertWebService {
                     StringBuilder personDataBuild = new StringBuilder();
                     Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                    personDataBuild.append("first name:").append(thePerson.getFirstName()).append(separator);
-                    personDataBuild.append("last name:").append(thePerson.getLastName()).append(separator);
-                    personDataBuild.append("address:").append(thePerson.getAddress()).append(separator);
-                    personDataBuild.append("email:").append(thePerson.getEmail()).append(separator);
+                    personDataBuild.append("first name:").append(thePerson.getFirstName()).append(App.SEPARATOR);
+                    personDataBuild.append("last name:").append(thePerson.getLastName()).append(App.SEPARATOR);
+                    personDataBuild.append("address:").append(thePerson.getAddress()).append(App.SEPARATOR);
+                    personDataBuild.append("email:").append(thePerson.getEmail()).append(App.SEPARATOR);
 
                     if (medicalRecord.isPresent()) {
-                        personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy")).append(separator);
-                        personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(separator);
+                        personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate()
+                                , App.DATE_FORMAT)).append(App.SEPARATOR);
+                        personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(App.SEPARATOR);
                         personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
                     }
 
@@ -108,7 +109,6 @@ public class AlertWebService {
     public Map<String, Object> getListOfChildrenByAddress(String address) {
 
         Map<String, Object> listOfChildren = new LinkedHashMap<>();
-        String separator = ",";
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson ->
@@ -117,14 +117,14 @@ public class AlertWebService {
                     Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
                     if ( medicalRecord.isPresent() ) {
-                        int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy");
+                        int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT);
 
-                        if (old <= 18) {
+                        if (old <= App.AGE_OF_MAJORITY) {
                             Iterable<Person> familyMember = personService.getFamilyMemberByChild(thePerson);
                             StringBuilder childDataBuild = new StringBuilder();
 
-                            childDataBuild.append(thePerson.getFirstName()).append(separator);
-                            childDataBuild.append(thePerson.getLastName()).append(separator);
+                            childDataBuild.append(thePerson.getFirstName()).append(App.SEPARATOR);
+                            childDataBuild.append(thePerson.getLastName()).append(App.SEPARATOR);
                             childDataBuild.append(old);
 
                             listOfChildren.put("Enfant id " + thePerson.getId() + " :", childDataBuild);
@@ -158,7 +158,6 @@ public class AlertWebService {
         ArrayList<Person> listOfPersons = new ArrayList<>();
         AtomicInteger countChildren = new AtomicInteger();
         AtomicInteger countAdult = new AtomicInteger();
-        String separator = ",";
 
         StreamSupport.stream(fireStationService.getFireStationsByStationNumber(Integer.parseInt(stationNumber)).spliterator(), false)
                 .forEach(theStation -> {
@@ -169,18 +168,20 @@ public class AlertWebService {
         listOfPersons.forEach(thePerson -> {
             Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
             if (medicalRecord.isPresent()) {
-                int age = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy");
-                if (age <= 18) {
+                int age = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT);
+                if (age <= App.AGE_OF_MAJORITY) {
                     countChildren.getAndIncrement();
                 } else {
                     countAdult.getAndIncrement();
                 }
             }
-            String persoDataBuilder = thePerson.getFirstName() + separator +
-                    thePerson.getLastName() + separator +
-                    thePerson.getAddress() + separator +
+
+            String personDataBuilder = thePerson.getFirstName() + App.SEPARATOR +
+                    thePerson.getLastName() + App.SEPARATOR +
+                    thePerson.getAddress() + App.SEPARATOR +
                     thePerson.getPhone();
-            data.put("person id " + thePerson.getId() + " :", persoDataBuilder);
+
+            data.put("person id " + thePerson.getId() + " :", personDataBuilder);
         });
 
         data.put("count total children", countChildren.toString());
@@ -191,7 +192,6 @@ public class AlertWebService {
 
     public Map<String, Map<String, String>> getListOfPersonByStationsNumber(int[] stationNumber) {
         Map<String, Map<String, String>> listOfFireStation = new LinkedHashMap<>();
-        String separator = ",";
 
         Arrays.stream(stationNumber).forEach(number -> StreamSupport.stream(fireStationService.getFireStationsByStationNumber(number).spliterator(), false)
                 .forEach(theStation -> {
@@ -204,12 +204,14 @@ public class AlertWebService {
 
                         if ( medicalRecord.isPresent() ) {
 
-                            String personDataBuilder = thePerson.getFirstName() + separator +
-                                    thePerson.getLastName() + separator +
-                                    thePerson.getPhone() + separator +
-                                    Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy") + separator +
-                                    medicalRecord.get().getMedications() + separator +
+                            String personDataBuilder = thePerson.getFirstName() + App.SEPARATOR +
+                                    thePerson.getLastName() + App.SEPARATOR +
+                                    thePerson.getPhone() + App.SEPARATOR +
+                                    Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT) +
+                                    App.SEPARATOR +
+                                    medicalRecord.get().getMedications() + App.SEPARATOR +
                                     medicalRecord.get().getAllergies();
+
                             listOfPersons.put("Person id " + thePerson.getId(), personDataBuilder);
                         }
 
