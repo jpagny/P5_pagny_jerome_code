@@ -39,8 +39,7 @@ public class PersonService {
     }
 
     public Person savePerson(Person person) {
-        Person personSaved = personRepository.save(person);
-        return personSaved;
+        return personRepository.save(person);
     }
 
     public void deletePerson(final Long id) {

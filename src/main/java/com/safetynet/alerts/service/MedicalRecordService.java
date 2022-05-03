@@ -34,8 +34,7 @@ public class MedicalRecordService {
     }
 
     public MedicalRecord saveMedicalRecord(MedicalRecord person) {
-        MedicalRecord medicalRecordSaved = medicalRecordRepository.save(person);
-        return medicalRecordSaved;
+        return medicalRecordRepository.save(person);
     }
 
     public void deleteMedicalRecord(final Long id) {
