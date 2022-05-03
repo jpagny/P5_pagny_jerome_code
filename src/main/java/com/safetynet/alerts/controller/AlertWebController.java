@@ -26,4 +26,11 @@ public class AlertWebController {
     public Map<String, Object> getPersonsAndNumberFireStationByAddress(@RequestParam String address) {
         return alertWebService.getPersonsAndNumberFireStationByAddress(address);
     }
+
+    @GetMapping("/personInfo")
+    public List<String> getInformationPerson(@RequestParam String firstName, @RequestParam String lastName) {
+        return alertWebService.getInformationPerson(firstName,lastName);
+    }
+
+
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 @Service
 public class AlertWebService {
@@ -37,8 +38,9 @@ public class AlertWebService {
         Map<String, Object> data = new HashMap<>();
         List<Object> listOfPersons = new ArrayList<>();
         String separator = ",";
-
         Optional<FireStation> fireStation = fireStationService.getFireStationByAddress(address);
+
+        data.put("address", address);
 
         fireStation.ifPresent(station -> data.put("number fireStation", station.getStation()));
 
@@ -55,7 +57,8 @@ public class AlertWebService {
 
                 if (medicalRecord.isPresent()) {
                     personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy")).append(separator);
-                    personDataBuild.append("medications:").append(medicalRecord.get().getMedications());
+                    personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(separator);
+                    personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
                 }
 
                 listOfPersons.add(personDataBuild);
@@ -65,6 +68,38 @@ public class AlertWebService {
         data.put("list of persons", listOfPersons);
 
         return data;
+    }
+
+    public List<String> getInformationPerson(String firstName, String lastName) {
+
+        List<String> listOfPersons = new ArrayList<>();
+        String separator = ",";
+
+        StreamSupport.stream(personService.getPersons().spliterator(), false)
+                .filter(theMedicalRecord ->
+                        firstName.equalsIgnoreCase(theMedicalRecord.getFirstName())
+                                && lastName.equalsIgnoreCase(theMedicalRecord.getLastName()))
+                .forEach(thePerson -> {
+
+                    StringBuilder personDataBuild = new StringBuilder();
+                    Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+
+                    personDataBuild.append("first name:").append(thePerson.getFirstName()).append(separator);
+                    personDataBuild.append("last name:").append(thePerson.getLastName()).append(separator);
+                    personDataBuild.append("address:").append(thePerson.getAddress()).append(separator);
+                    personDataBuild.append("email:").append(thePerson.getEmail()).append(separator);
+
+                    if (medicalRecord.isPresent()) {
+                        personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy")).append(separator);
+                        personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(separator);
+                        personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
+                    }
+
+                    listOfPersons.add(personDataBuild.toString());
+
+                });
+
+        return listOfPersons;
     }
 
 

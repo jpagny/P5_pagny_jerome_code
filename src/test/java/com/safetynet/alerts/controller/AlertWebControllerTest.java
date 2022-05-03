@@ -1,7 +1,6 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.service.AlertWebService;
-import com.safetynet.alerts.service.FireStationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +30,14 @@ public class AlertWebControllerTest {
     public void getPersonsAndNumberFireStationByAddress() throws Exception {
         mockMvc.perform(get("/fire")
                         .param("address","1509 Culver St"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getInformationPerson() throws Exception {
+        mockMvc.perform(get("/personInfo")
+                        .param("firstName","John")
+                        .param("lastName","Boyd"))
                 .andExpect(status().isOk());
     }
 
