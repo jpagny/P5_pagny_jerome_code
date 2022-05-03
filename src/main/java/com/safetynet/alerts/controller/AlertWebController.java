@@ -47,7 +47,7 @@ public class AlertWebController {
     }
 
     @GetMapping("/flood/stations")
-    public Map<String,String> getListOfPersonsByStationsNumber(@RequestParam int[] stations){
+    public  Map<String, Map<String, String>> getListOfPersonsByStationsNumber(@RequestParam int[] stations){
         return alertWebService.getListOfPersonByStationsNumber(stations);
     }
 

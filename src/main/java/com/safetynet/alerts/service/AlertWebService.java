@@ -28,7 +28,8 @@ public class AlertWebService {
         ArrayList<String> listEmail = new ArrayList<>();
 
         personService.getPersons().forEach(person -> {
-            if (person.getCity().equalsIgnoreCase(city)) {
+            if (person.getCity().equalsIgnoreCase(city)
+                    && !listEmail.contains(person.getEmail()) ) {
                 listEmail.add(person.getEmail());
             }
         });
@@ -99,7 +100,6 @@ public class AlertWebService {
                     }
 
                     listOfPersons.add(personDataBuild.toString());
-
                 });
 
         return listOfPersons;
@@ -107,7 +107,7 @@ public class AlertWebService {
 
     public Map<String, Object> getListOfChildrenByAddress(String address) {
 
-        Map<String, Object> listOfChildren = new HashMap<>();
+        Map<String, Object> listOfChildren = new LinkedHashMap<>();
         String separator = ",";
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
@@ -116,20 +116,22 @@ public class AlertWebService {
                 .forEach(thePerson -> {
                     Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                    int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy");
+                    if ( medicalRecord.isPresent() ) {
+                        int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy");
 
-                    if (old <= 18) {
-                        Iterable<Person> familyMember = personService.getFamilyMemberByChild(thePerson);
-                        StringBuilder childDataBuild = new StringBuilder();
+                        if (old <= 18) {
+                            Iterable<Person> familyMember = personService.getFamilyMemberByChild(thePerson);
+                            StringBuilder childDataBuild = new StringBuilder();
 
-                        childDataBuild.append(thePerson.getFirstName()).append(separator);
-                        childDataBuild.append(thePerson.getLastName()).append(separator);
-                        childDataBuild.append(old);
+                            childDataBuild.append(thePerson.getFirstName()).append(separator);
+                            childDataBuild.append(thePerson.getLastName()).append(separator);
+                            childDataBuild.append(old);
 
-                        listOfChildren.put("Enfant : " + thePerson.getId(), childDataBuild);
-                        listOfChildren.put("Autres membre de l'enfant " + thePerson.getId() + ":", familyMember);
+                            listOfChildren.put("Enfant id " + thePerson.getId() + " :", childDataBuild);
+                            listOfChildren.put("Autres membre de l'enfant " + thePerson.getFirstName()
+                                    + "(" + thePerson.getId() + ") :", familyMember);
+                        }
                     }
-
                 });
 
         return listOfChildren;
@@ -139,21 +141,20 @@ public class AlertWebService {
         List<String> listOfPhoneNumber = new ArrayList<>();
         Optional<FireStation> fireStation = fireStationService.getFireStation(Long.parseLong(fireStationNumber));
 
-        if (fireStation.isPresent()) {
-            StreamSupport.stream(personService.getPersons().spliterator(), false)
-                    .filter(thePerson -> fireStation.get().getAddress().equalsIgnoreCase(thePerson.getAddress()))
-                    .forEach(thePerson -> {
-                        if (!listOfPhoneNumber.contains(thePerson.getPhone())) {
-                            listOfPhoneNumber.add(thePerson.getPhone());
-                        }
-                    });
-        }
+        fireStation.ifPresent(station -> StreamSupport.stream(personService.getPersons().spliterator(), false)
+                .filter(thePerson -> station.getAddress().equalsIgnoreCase(thePerson.getAddress()))
+                .forEach(thePerson -> {
+                    if (!listOfPhoneNumber.contains(thePerson.getPhone())) {
+                        listOfPhoneNumber.add(thePerson.getPhone());
+                    }
+                }));
 
         return listOfPhoneNumber;
     }
 
     public Map<String, String> getListOfPersonByStationNumber(String stationNumber) {
-        Map<String, String> data = new HashMap<>();
+
+        Map<String, String> data = new LinkedHashMap<>();
         ArrayList<Person> listOfPersons = new ArrayList<>();
         AtomicInteger countChildren = new AtomicInteger();
         AtomicInteger countAdult = new AtomicInteger();
@@ -165,7 +166,7 @@ public class AlertWebService {
                     listOfPersons.addAll(list);
                 });
 
-        StreamSupport.stream(listOfPersons.spliterator(), false).forEach(thePerson -> {
+        listOfPersons.forEach(thePerson -> {
             Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
             if (medicalRecord.isPresent()) {
                 int age = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy");
@@ -175,50 +176,49 @@ public class AlertWebService {
                     countAdult.getAndIncrement();
                 }
             }
-            StringBuilder persoDataBuilder = new StringBuilder();
-            persoDataBuilder.append(thePerson.getFirstName()).append(separator);
-            persoDataBuilder.append(thePerson.getLastName()).append(separator);
-            persoDataBuilder.append(thePerson.getAddress()).append(separator);
-            persoDataBuilder.append(thePerson.getPhone());
-            data.put("person " + thePerson.getId() + ":", persoDataBuilder.toString());
+            String persoDataBuilder = thePerson.getFirstName() + separator +
+                    thePerson.getLastName() + separator +
+                    thePerson.getAddress() + separator +
+                    thePerson.getPhone();
+            data.put("person id " + thePerson.getId() + " :", persoDataBuilder);
         });
 
-        data.put("count childlren", countChildren.toString());
+        data.put("count total children", countChildren.toString());
         data.put("count total adults:", countAdult.toString());
 
         return data;
     }
 
-    public Map<String, String> getListOfPersonByStationsNumber(int[] stationNumber) {
-        Map <String, String> data = new LinkedHashMap <>();
+    public Map<String, Map<String, String>> getListOfPersonByStationsNumber(int[] stationNumber) {
+        Map<String, Map<String, String>> listOfFireStation = new LinkedHashMap<>();
         String separator = ",";
 
-        Arrays.stream(stationNumber).forEach(number -> {
+        Arrays.stream(stationNumber).forEach(number -> StreamSupport.stream(fireStationService.getFireStationsByStationNumber(number).spliterator(), false)
+                .forEach(theStation -> {
 
-            StreamSupport.stream(fireStationService.getFireStationsByStationNumber(number).spliterator(), false)
-                    .forEach(theStation -> {
+                    Map<String, String> listOfPersons = new HashMap<>();
 
-                        data.put("firestation id " + theStation.getId() + " - station id " + theStation.getStation(), theStation.getAddress());
-                        StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).forEach(thePerson -> {
-                            Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+                    StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).forEach(thePerson -> {
 
-                            StringBuilder personDataBuilder = new StringBuilder();
+                        Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                            personDataBuilder.append(thePerson.getFirstName()).append(separator);
-                            personDataBuilder.append(thePerson.getLastName()).append(separator);
-                            personDataBuilder.append(thePerson.getPhone()).append(separator);
-                            personDataBuilder.append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy")).append(separator);
-                            personDataBuilder.append(medicalRecord.get().getMedications()).append(separator);
-                            personDataBuilder.append(medicalRecord.get().getAllergies());
+                        if ( medicalRecord.isPresent() ) {
 
-                            data.put("Person " + thePerson.getId() + ":", personDataBuilder.toString());
-                        });
+                            String personDataBuilder = thePerson.getFirstName() + separator +
+                                    thePerson.getLastName() + separator +
+                                    thePerson.getPhone() + separator +
+                                    Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy") + separator +
+                                    medicalRecord.get().getMedications() + separator +
+                                    medicalRecord.get().getAllergies();
+                            listOfPersons.put("Person id " + thePerson.getId(), personDataBuilder);
+                        }
+
                     });
 
-        });
+                    listOfFireStation.put("station id " + theStation.getStation() + " - " + theStation.getAddress(), listOfPersons);
+                }));
 
-
-        return data;
+        return listOfFireStation;
     }
 
 
