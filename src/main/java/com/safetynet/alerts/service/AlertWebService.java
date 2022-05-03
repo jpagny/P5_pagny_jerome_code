@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -131,6 +132,23 @@ public class AlertWebService {
                 });
 
         return listOfChildren;
+    }
+
+    public List<String> getListOfPhoneNumberByFireStationNumber(String fireStationNumber){
+        List<String> listOfPhoneNumber = new ArrayList<>();
+        Optional<FireStation> fireStation = fireStationService.getFireStation(Long.parseLong(fireStationNumber));
+
+        if ( fireStation.isPresent() ) {
+            StreamSupport.stream(personService.getPersons().spliterator(), false)
+                    .filter(thePerson -> fireStation.get().getAddress().equalsIgnoreCase(thePerson.getAddress()))
+                    .forEach(thePerson -> {
+                        if ( !listOfPhoneNumber.contains(thePerson.getPhone())) {
+                            listOfPhoneNumber.add(thePerson.getPhone());
+                        }
+                    });
+        }
+
+        return listOfPhoneNumber;
     }
 
 

@@ -48,4 +48,11 @@ public class AlertWebControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getListOfPhoneNumberByFireStationNumber() throws Exception{
+        mockMvc.perform(get("/phoneAlert")
+                        .param("firestation_number","1"))
+                .andExpect(status().isOk());
+    }
+
 }
