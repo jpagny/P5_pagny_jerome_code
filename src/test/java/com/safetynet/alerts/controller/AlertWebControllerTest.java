@@ -51,14 +51,21 @@ public class AlertWebControllerTest {
     @Test
     public void getListOfPhoneNumberByFireStationNumber() throws Exception{
         mockMvc.perform(get("/phoneAlert")
-                        .param("firestation_number","1"))
+                        .param("firestation","1"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void getListOfPersonByStationNumber() throws Exception{
         mockMvc.perform(get("/firestation")
-                        .param("station_number","1"))
+                        .param("stationNumber","1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getListOfPersonByStationsNumber() throws Exception{
+        mockMvc.perform(get("/flood/stations")
+                        .param("stations","1,2"))
                 .andExpect(status().isOk());
     }
 

@@ -37,13 +37,18 @@ public class AlertWebController {
     }
 
     @GetMapping("/phoneAlert")
-    public List<String> getListOfPhoneNumberByFireStationNumber(@RequestParam String firestation_number){
-         return alertWebService.getListOfPhoneNumberByFireStationNumber(firestation_number);
+    public List<String> getListOfPhoneNumberByFireStationNumber(@RequestParam String firestation){
+         return alertWebService.getListOfPhoneNumberByFireStationNumber(firestation);
     }
 
     @GetMapping("/firestation")
-    public Map<String,String> getListOfPersonByStationNumber(@RequestParam String station_number){
-        return alertWebService.getListOfPersonByStationNumber(station_number);
+    public Map<String,String> getListOfPersonByStationNumber(@RequestParam String stationNumber){
+        return alertWebService.getListOfPersonByStationNumber(stationNumber);
+    }
+
+    @GetMapping("/flood/stations")
+    public Map<String,String> getListOfPersonsByStationsNumber(@RequestParam int[] stations){
+        return alertWebService.getListOfPersonByStationsNumber(stations);
     }
 
 }
