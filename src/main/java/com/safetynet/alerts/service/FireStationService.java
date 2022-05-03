@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Data
@@ -28,6 +29,12 @@ public class FireStationService {
         return StreamSupport.stream(fireStationRepository.findAll().spliterator(), false)
                 .filter(theFireStation -> address.equalsIgnoreCase(theFireStation.getAddress()))
                 .findFirst();
+    }
+
+    public Iterable<FireStation> getFireStationsByStationNumber(final int stationNumber){
+        return StreamSupport.stream(fireStationRepository.findAll().spliterator(), false)
+                .filter(theFireStation -> String.valueOf(stationNumber).equalsIgnoreCase(theFireStation.getStation()))
+                .collect(Collectors.toList());
     }
 
     public FireStation saveFireStation(FireStation fireStation) {

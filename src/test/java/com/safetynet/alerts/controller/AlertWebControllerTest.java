@@ -55,4 +55,11 @@ public class AlertWebControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getListOfPersonByStationNumber() throws Exception{
+        mockMvc.perform(get("/firestation")
+                        .param("station_number","1"))
+                .andExpect(status().isOk());
+    }
+
 }

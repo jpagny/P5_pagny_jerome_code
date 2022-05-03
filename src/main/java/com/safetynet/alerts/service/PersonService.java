@@ -25,17 +25,16 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Iterable<Person> getPersonsByLastNameAndAddress(String lastName, String address) {
-        return StreamSupport.stream(personRepository.findAll().spliterator(), false)
-                .filter(theFireStation -> lastName.equalsIgnoreCase(theFireStation.getLastName())
-                        && address.equalsIgnoreCase(theFireStation.getAddress()))
-                .collect(Collectors.toList());
-    }
-
     public Iterable<Person> getFamilyMemberByChild(Person child) {
         return StreamSupport.stream(personRepository.findAll().spliterator(), false)
                 .filter(thePerson -> child.getLastName().equalsIgnoreCase(thePerson.getLastName())
                         && !child.getFirstName().equalsIgnoreCase(thePerson.getFirstName()))
+                .collect(Collectors.toList());
+    }
+
+    public Iterable<Person> getPersonsByAddress(String address){
+        return StreamSupport.stream(personRepository.findAll().spliterator(), false)
+                .filter(thePerson -> address.equalsIgnoreCase(thePerson.getAddress()))
                 .collect(Collectors.toList());
     }
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -134,21 +135,58 @@ public class AlertWebService {
         return listOfChildren;
     }
 
-    public List<String> getListOfPhoneNumberByFireStationNumber(String fireStationNumber){
+    public List<String> getListOfPhoneNumberByFireStationNumber(String fireStationNumber) {
         List<String> listOfPhoneNumber = new ArrayList<>();
         Optional<FireStation> fireStation = fireStationService.getFireStation(Long.parseLong(fireStationNumber));
 
-        if ( fireStation.isPresent() ) {
+        if (fireStation.isPresent()) {
             StreamSupport.stream(personService.getPersons().spliterator(), false)
                     .filter(thePerson -> fireStation.get().getAddress().equalsIgnoreCase(thePerson.getAddress()))
                     .forEach(thePerson -> {
-                        if ( !listOfPhoneNumber.contains(thePerson.getPhone())) {
+                        if (!listOfPhoneNumber.contains(thePerson.getPhone())) {
                             listOfPhoneNumber.add(thePerson.getPhone());
                         }
                     });
         }
 
         return listOfPhoneNumber;
+    }
+
+    public Map<String,String> getListOfPersonByStationNumber(String stationNumber) {
+        Map<String,String> data = new HashMap<>();
+        ArrayList<Person> listOfPersons = new ArrayList<>();
+        AtomicInteger countChildren = new AtomicInteger();
+        AtomicInteger countAdult = new AtomicInteger();
+        String separator = ",";
+
+        StreamSupport.stream(fireStationService.getFireStationsByStationNumber(Integer.parseInt(stationNumber)).spliterator(), false)
+                .forEach(theStation -> {
+                    List<Person> list =  StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).collect(Collectors.toList());
+                    listOfPersons.addAll(list);
+                });
+
+        StreamSupport.stream(listOfPersons.spliterator(),false).forEach(thePerson -> {
+            Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+            if (medicalRecord.isPresent()){
+                int age = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(),"MM/dd/yyyy");
+                if ( age <= 18 ){
+                    countChildren.getAndIncrement();
+                } else {
+                    countAdult.getAndIncrement();
+                }
+            }
+            StringBuilder persoDataBuilder = new StringBuilder();
+            persoDataBuilder.append(thePerson.getFirstName()).append(separator);
+            persoDataBuilder.append(thePerson.getLastName()).append(separator);
+            persoDataBuilder.append(thePerson.getAddress()).append(separator);
+            persoDataBuilder.append(thePerson.getPhone());
+            data.put("person " + thePerson.getId() + ":",persoDataBuilder.toString());
+        });
+
+        data.put("count childlren",countChildren.toString());
+        data.put("count total adults:",countAdult.toString());
+
+        return data;
     }
 
 

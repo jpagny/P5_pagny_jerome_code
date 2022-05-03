@@ -36,10 +36,14 @@ public class AlertWebController {
         return alertWebService.getListOfChildrenByAddress(address);
     }
 
-     @GetMapping("/phoneAlert")
+    @GetMapping("/phoneAlert")
     public List<String> getListOfPhoneNumberByFireStationNumber(@RequestParam String firestation_number){
          return alertWebService.getListOfPhoneNumberByFireStationNumber(firestation_number);
-     }
+    }
 
+    @GetMapping("/firestation")
+    public Map<String,String> getListOfPersonByStationNumber(@RequestParam String station_number){
+        return alertWebService.getListOfPersonByStationNumber(station_number);
+    }
 
 }
