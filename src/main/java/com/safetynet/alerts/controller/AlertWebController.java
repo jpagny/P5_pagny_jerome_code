@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +29,11 @@ public class AlertWebController {
     @GetMapping("/personInfo")
     public List<String> getInformationPerson(@RequestParam String firstName, @RequestParam String lastName) {
         return alertWebService.getInformationPerson(firstName,lastName);
+    }
+
+    @GetMapping("/childAlert")
+    public Map<String,Object> getListOfChildrenByAddress(@RequestParam String address){
+        return alertWebService.getListOfChildrenByAddress(address);
     }
 
 

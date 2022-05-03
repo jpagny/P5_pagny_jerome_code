@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Data
 @Service
@@ -21,6 +23,20 @@ public class PersonService {
 
     public Iterable<Person> getPersons() {
         return personRepository.findAll();
+    }
+
+    public Iterable<Person> getPersonsByLastNameAndAddress(String lastName, String address) {
+        return StreamSupport.stream(personRepository.findAll().spliterator(), false)
+                .filter(theFireStation -> lastName.equalsIgnoreCase(theFireStation.getLastName())
+                        && address.equalsIgnoreCase(theFireStation.getAddress()))
+                .collect(Collectors.toList());
+    }
+
+    public Iterable<Person> getFamilyMemberByChild(Person child) {
+        return StreamSupport.stream(personRepository.findAll().spliterator(), false)
+                .filter(thePerson -> child.getLastName().equalsIgnoreCase(thePerson.getLastName())
+                        && !child.getFirstName().equalsIgnoreCase(thePerson.getFirstName()))
+                .collect(Collectors.toList());
     }
 
     public Person savePerson(Person person) {

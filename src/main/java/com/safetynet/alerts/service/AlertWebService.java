@@ -2,6 +2,7 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.utility.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,9 +77,9 @@ public class AlertWebService {
         String separator = ",";
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
-                .filter(theMedicalRecord ->
-                        firstName.equalsIgnoreCase(theMedicalRecord.getFirstName())
-                                && lastName.equalsIgnoreCase(theMedicalRecord.getLastName()))
+                .filter(thePerson ->
+                        firstName.equalsIgnoreCase(thePerson.getFirstName())
+                                && lastName.equalsIgnoreCase(thePerson.getLastName()))
                 .forEach(thePerson -> {
 
                     StringBuilder personDataBuild = new StringBuilder();
@@ -100,6 +101,36 @@ public class AlertWebService {
                 });
 
         return listOfPersons;
+    }
+
+    public Map<String, Object> getListOfChildrenByAddress(String address) {
+
+        Map<String, Object> listOfChildren = new HashMap<>();
+        String separator = ",";
+
+        StreamSupport.stream(personService.getPersons().spliterator(), false)
+                .filter(thePerson ->
+                        address.equalsIgnoreCase(thePerson.getAddress()))
+                .forEach(thePerson -> {
+                    Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+
+                    int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), "MM/dd/yyyy");
+
+                    if (old <= 18) {
+                        Iterable<Person> familyMember = personService.getFamilyMemberByChild(thePerson);
+                        StringBuilder childDataBuild = new StringBuilder();
+
+                        childDataBuild.append(thePerson.getFirstName()).append(separator);
+                        childDataBuild.append(thePerson.getLastName()).append(separator);
+                        childDataBuild.append(old);
+
+                        listOfChildren.put("Enfant : " + thePerson.getId(), childDataBuild);
+                        listOfChildren.put("Autres membre de l'enfant " + thePerson.getId() + ":", familyMember);
+                    }
+
+                });
+
+        return listOfChildren;
     }
 
 
