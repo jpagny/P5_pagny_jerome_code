@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-
 @Service
 public class PersonService {
 
@@ -25,14 +24,14 @@ public class PersonService {
     }
 
     public Iterable<Person> getFamilyMemberByChild(Person child) {
-        return StreamSupport.stream(data.getPersons().values().spliterator(), false)
+        return data.getPersons().values().stream()
                 .filter(thePerson -> child.getLastName().equalsIgnoreCase(thePerson.getLastName())
                         && !child.getFirstName().equalsIgnoreCase(thePerson.getFirstName()))
                 .collect(Collectors.toList());
     }
 
     public Iterable<Person> getPersonsByAddress(String address) {
-        return StreamSupport.stream(data.getPersons().values().spliterator(), false)
+        return data.getPersons().values().stream()
                 .filter(thePerson -> address.equalsIgnoreCase(thePerson.getAddress()))
                 .collect(Collectors.toList());
     }

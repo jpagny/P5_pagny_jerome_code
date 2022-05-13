@@ -4,7 +4,6 @@ import com.safetynet.alerts.constant.App;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.utility.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,8 +59,7 @@ public class AlertWebService {
                 personDataBuild.append("phone:").append(person.getPhone()).append(App.SEPARATOR);
 
                 if (medicalRecord.isPresent()) {
-                    personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(),
-                            App.DATE_FORMAT)).append(App.SEPARATOR);
+                    personDataBuild.append("age:").append(medicalRecordService.getAge(medicalRecord.get())).append(App.SEPARATOR);
                     personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(App.SEPARATOR);
                     personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
                 }
@@ -94,8 +92,7 @@ public class AlertWebService {
                     personDataBuild.append("email:").append(thePerson.getEmail()).append(App.SEPARATOR);
 
                     if (medicalRecord.isPresent()) {
-                        personDataBuild.append("age:").append(Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate()
-                                , App.DATE_FORMAT)).append(App.SEPARATOR);
+                        personDataBuild.append("age:").append(medicalRecordService.getAge(medicalRecord.get())).append(App.SEPARATOR);
                         personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(App.SEPARATOR);
                         personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
                     }
@@ -117,15 +114,14 @@ public class AlertWebService {
                     Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
                     if (medicalRecord.isPresent()) {
-                        int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT);
 
-                        if (old <= App.AGE_OF_MAJORITY) {
+                        if (medicalRecordService.isMinor(medicalRecord.get())) {
                             Iterable<Person> familyMember = personService.getFamilyMemberByChild(thePerson);
                             StringBuilder childDataBuild = new StringBuilder();
 
                             childDataBuild.append(thePerson.getFirstName()).append(App.SEPARATOR);
                             childDataBuild.append(thePerson.getLastName()).append(App.SEPARATOR);
-                            childDataBuild.append(old);
+                            childDataBuild.append(medicalRecordService.getAge(medicalRecord.get()));
 
                             listOfChildren.put("Enfant id " + thePerson.getId() + " :", childDataBuild);
                             listOfChildren.put("Autres membre de l'enfant " + thePerson.getFirstName()
@@ -141,7 +137,7 @@ public class AlertWebService {
         List<String> listOfPhoneNumber = new ArrayList<>();
         FireStation fireStation = fireStationService.getFireStation(fireStationNumber);
 
-        if ( fireStation != null) {
+        if (fireStation != null) {
             StreamSupport.stream(personService.getPersons().spliterator(), false)
                     .filter(thePerson -> fireStation.getAddress().equalsIgnoreCase(thePerson.getAddress()))
                     .forEach(thePerson -> {
@@ -170,8 +166,7 @@ public class AlertWebService {
         listOfPersons.forEach(thePerson -> {
             Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
             if (medicalRecord.isPresent()) {
-                int age = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT);
-                if (age <= App.AGE_OF_MAJORITY) {
+                if (medicalRecordService.isMinor(medicalRecord.get())) {
                     countChildren.getAndIncrement();
                 } else {
                     countAdult.getAndIncrement();
@@ -209,7 +204,7 @@ public class AlertWebService {
                             String personDataBuilder = thePerson.getFirstName() + App.SEPARATOR +
                                     thePerson.getLastName() + App.SEPARATOR +
                                     thePerson.getPhone() + App.SEPARATOR +
-                                    Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT) +
+                                    medicalRecordService.getAge(medicalRecord.get()) +
                                     App.SEPARATOR +
                                     medicalRecord.get().getMedications() + App.SEPARATOR +
                                     medicalRecord.get().getAllergies();

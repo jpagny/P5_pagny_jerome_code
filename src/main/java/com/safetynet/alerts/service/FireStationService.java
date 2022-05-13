@@ -2,7 +2,6 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.FireStation;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Data
 @Service
 public class FireStationService {
 
@@ -27,13 +25,13 @@ public class FireStationService {
     }
 
     public Optional<FireStation> getFireStationByAddress(final String address) {
-        return StreamSupport.stream(data.getFireStations().values().spliterator(), false)
+        return data.getFireStations().values().stream()
                 .filter(theFireStation -> address.equalsIgnoreCase(theFireStation.getAddress()))
                 .findFirst();
     }
 
     public Iterable<FireStation> getFireStationsByStationNumber(final int stationNumber) {
-        return StreamSupport.stream(data.getFireStations().values().spliterator(), false)
+        return data.getFireStations().values().stream()
                 .filter(theFireStation -> String.valueOf(stationNumber).equalsIgnoreCase(theFireStation.getStation()))
                 .collect(Collectors.toList());
     }

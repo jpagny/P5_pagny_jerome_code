@@ -1,17 +1,18 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.constant.App;
 import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.StreamSupport;
 
-@Data
 @Service
 public class MedicalRecordService {
 
@@ -27,7 +28,7 @@ public class MedicalRecordService {
     }
 
     public Optional<MedicalRecord> getMedicalRecordByPerson(Person person) {
-        return StreamSupport.stream(data.getMedicalRecord().values().spliterator(), false)
+        return data.getMedicalRecord().values().stream()
                 .filter(theMedicalRecord ->
                         person.getFirstName().equalsIgnoreCase(theMedicalRecord.getFirstName())
                                 && person.getLastName().equalsIgnoreCase(theMedicalRecord.getLastName()))
@@ -42,6 +43,16 @@ public class MedicalRecordService {
 
     public void deleteMedicalRecord(final String id) {
         data.getMedicalRecord().remove(id);
+    }
+
+    public int getAge(MedicalRecord medicalRecord) {
+        LocalDate today = LocalDate.now();
+        LocalDate birthday = LocalDate.parse(medicalRecord.getBirthdate(), DateTimeFormatter.ofPattern(App.DATE_FORMAT));
+        return Period.between(birthday, today).getYears();
+    }
+
+    public boolean isMinor(MedicalRecord medicalRecord) {
+        return getAge(medicalRecord) < App.AGE_OF_MAJORITY;
     }
 
 
