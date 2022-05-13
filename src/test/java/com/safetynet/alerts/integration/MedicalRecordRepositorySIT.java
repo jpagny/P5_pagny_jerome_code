@@ -3,6 +3,7 @@ package com.safetynet.alerts.integration;
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.integration.config.IntegrationTestConfig;
 import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,10 @@ public class MedicalRecordRepositorySIT {
 
     @Test
     public void should_find_medicalRecord_by_id() {
-        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord("1");
+        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecords().iterator().next();
+        String id = medicalRecord.getId();
+        medicalRecord = medicalRecordService.getMedicalRecord(id);
         assertTrue(medicalRecord != null);
-        assertEquals("John", medicalRecord.getFirstName());
     }
 
     @Test

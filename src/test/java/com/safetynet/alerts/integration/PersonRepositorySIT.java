@@ -28,8 +28,9 @@ public class PersonRepositorySIT {
     @Test
     public void should_find_person_by_id() {
         Person person = personService.getPersons().iterator().next();
+        String id = person.getId();
+        person = personService.getPerson(id);
         assertTrue(person != null);
-        assertEquals("John", person.getFirstName());
     }
 
     @Test
