@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class PersonServiceTest {
@@ -40,7 +39,7 @@ public class PersonServiceTest {
 
     @Test
     public void should_find_all_persons() {
-        Iterable persons = personService.getPersons();
+        Iterable<Person> persons = personService.getPersons();
         long count = Iterators.size(persons.iterator());
         assertEquals(1, count);
     }
@@ -48,7 +47,7 @@ public class PersonServiceTest {
     @Test
     public void should_find_person_by_id() {
         Person person = personService.getPerson("1");
-        assertTrue(person != null);
+        assertNotNull(person);
         assertEquals("John", person.getFirstName());
     }
 
@@ -72,7 +71,7 @@ public class PersonServiceTest {
     @Test
     public void should_delete_person_by_id() {
         personService.deletePerson("1");
-        assertTrue(personService.getPerson("1") == null);
+        assertNull(personService.getPerson("1"));
     }
 
 

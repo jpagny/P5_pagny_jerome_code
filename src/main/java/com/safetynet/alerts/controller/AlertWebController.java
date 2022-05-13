@@ -28,26 +28,26 @@ public class AlertWebController {
 
     @GetMapping("/personInfo")
     public List<String> getInformationPerson(@RequestParam String firstName, @RequestParam String lastName) {
-        return alertWebService.getInformationPerson(firstName,lastName);
+        return alertWebService.getInformationPerson(firstName, lastName);
     }
 
     @GetMapping("/childAlert")
-    public Map<String,Object> getListOfChildrenByAddress(@RequestParam String address){
+    public Map<String, Object> getListOfChildrenByAddress(@RequestParam String address) {
         return alertWebService.getListOfChildrenByAddress(address);
     }
 
     @GetMapping("/phoneAlert")
-    public List<String> getListOfPhoneNumberByFireStationNumber(@RequestParam String firestation){
-         return alertWebService.getListOfPhoneNumberByFireStationNumber(firestation);
+    public List<String> getListOfPhoneNumberByFireStationNumber(@RequestParam String firestation) {
+        return alertWebService.getListOfPhoneNumberByFireStationNumber(firestation);
     }
 
     @GetMapping("/firestation")
-    public Map<String,String> getListOfPersonByStationNumber(@RequestParam String stationNumber){
+    public Map<String, String> getListOfPersonByStationNumber(@RequestParam String stationNumber) {
         return alertWebService.getListOfPersonByStationNumber(stationNumber);
     }
 
     @GetMapping("/flood/stations")
-    public  Map<String, Map<String, String>> getListOfPersonsByStationsNumber(@RequestParam int[] stations){
+    public Map<String, Map<String, String>> getListOfPersonsByStationsNumber(@RequestParam int[] stations) {
         return alertWebService.getListOfPersonByStationsNumber(stations);
     }
 

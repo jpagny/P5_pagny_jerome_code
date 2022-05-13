@@ -1,7 +1,6 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.utility.Utils;
 import org.junit.jupiter.api.Test;

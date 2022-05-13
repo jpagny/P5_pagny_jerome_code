@@ -3,7 +3,6 @@ package com.safetynet.alerts.integration;
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.integration.config.IntegrationTestConfig;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = {IntegrationTestConfig.class})
 public class MedicalRecordRepositorySIT {
@@ -30,7 +29,7 @@ public class MedicalRecordRepositorySIT {
         MedicalRecord medicalRecord = medicalRecordService.getMedicalRecords().iterator().next();
         String id = medicalRecord.getId();
         medicalRecord = medicalRecordService.getMedicalRecord(id);
-        assertTrue(medicalRecord != null);
+        assertNotNull(medicalRecord);
     }
 
     @Test

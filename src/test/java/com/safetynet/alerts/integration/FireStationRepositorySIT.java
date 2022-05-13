@@ -3,15 +3,13 @@ package com.safetynet.alerts.integration;
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.integration.config.IntegrationTestConfig;
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.service.FireStationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {IntegrationTestConfig.class})
 public class FireStationRepositorySIT {
@@ -31,7 +29,7 @@ public class FireStationRepositorySIT {
         FireStation fireStation = fireStationService.getFireStations().iterator().next();
         String id = fireStation.getId();
         fireStation = fireStationService.getFireStation(id);
-        assertTrue(fireStation != null);
+        assertNotNull(fireStation);
     }
 
     @Test

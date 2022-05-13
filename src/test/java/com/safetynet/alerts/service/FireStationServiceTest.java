@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class FireStationServiceTest {
@@ -31,12 +30,12 @@ public class FireStationServiceTest {
         fireStation.setAddress("29 15th St");
         fireStation.setStation("1");
 
-        data.getFireStations().put("1",fireStation);
+        data.getFireStations().put("1", fireStation);
     }
 
     @Test
     public void should_find_all_fireStation() {
-        Iterable fireStations = fireStationService.getFireStations();
+        Iterable<FireStation> fireStations = fireStationService.getFireStations();
         long count = Iterators.size(fireStations.iterator());
         assertEquals(1, count);
     }
@@ -44,7 +43,7 @@ public class FireStationServiceTest {
     @Test
     public void should_find_fireStation_by_id() {
         FireStation fireStation = fireStationService.getFireStation("1");
-        assertTrue(fireStation != null);
+        assertNotNull(fireStation);
         assertEquals("1", fireStation.getStation());
     }
 
@@ -63,7 +62,7 @@ public class FireStationServiceTest {
     @Test
     public void should_delete_fireStation_by_id() {
         fireStationService.deleteFireStation("1");
-        assertTrue(fireStationService.getFireStation("1") == null);
+        assertNull(fireStationService.getFireStation("1"));
     }
 
 

@@ -30,7 +30,7 @@ public class AlertWebService {
 
         personService.getPersons().forEach(person -> {
             if (person.getCity().equalsIgnoreCase(city)
-                    && !listEmail.contains(person.getEmail()) ) {
+                    && !listEmail.contains(person.getEmail())) {
                 listEmail.add(person.getEmail());
             }
         });
@@ -116,7 +116,7 @@ public class AlertWebService {
                 .forEach(thePerson -> {
                     Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                    if ( medicalRecord.isPresent() ) {
+                    if (medicalRecord.isPresent()) {
                         int old = Utils.getAgeByBirthdate(medicalRecord.get().getBirthdate(), App.DATE_FORMAT);
 
                         if (old <= App.AGE_OF_MAJORITY) {
@@ -202,7 +202,7 @@ public class AlertWebService {
 
                         Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                        if ( medicalRecord.isPresent() ) {
+                        if (medicalRecord.isPresent()) {
 
                             String personDataBuilder = thePerson.getFirstName() + App.SEPARATOR +
                                     thePerson.getLastName() + App.SEPARATOR +

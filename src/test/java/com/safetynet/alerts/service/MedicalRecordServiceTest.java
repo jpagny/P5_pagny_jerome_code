@@ -11,8 +11,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MedicalRecordServiceTest {
@@ -39,20 +38,20 @@ public class MedicalRecordServiceTest {
         medicalRecord.setMedications(medications);
         medicalRecord.setAllergies(new ArrayList<>());
 
-        data.getMedicalRecord().put("1",medicalRecord);
+        data.getMedicalRecord().put("1", medicalRecord);
     }
 
     @Test
     public void should_find_all_medicalRecords() {
-        Iterable fireStations = medicalRecordService.getMedicalRecords();
-        long count = Iterators.size(fireStations.iterator());
+        Iterable<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecords();
+        long count = Iterators.size(medicalRecords.iterator());
         assertEquals(1, count);
     }
 
     @Test
     public void should_find_medicalRecord_by_id() {
         MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord("1");
-        assertTrue(medicalRecord != null);
+        assertNotNull(medicalRecord);
         assertEquals("John", medicalRecord.getFirstName());
     }
 
@@ -77,7 +76,7 @@ public class MedicalRecordServiceTest {
     @Test
     public void should_delete_medicalRecord_by_id() {
         medicalRecordService.deleteMedicalRecord("1");
-        assertTrue(medicalRecordService.getMedicalRecord("1") == null);
+        assertNull(medicalRecordService.getMedicalRecord("1"));
     }
 
 

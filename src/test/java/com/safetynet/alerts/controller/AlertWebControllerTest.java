@@ -22,50 +22,50 @@ public class AlertWebControllerTest {
     @Test
     public void getAllEmailByCity() throws Exception {
         mockMvc.perform(get("/communityEmail")
-                        .param("city","Culver"))
+                        .param("city", "Culver"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void getPersonsAndNumberFireStationByAddress() throws Exception {
         mockMvc.perform(get("/fire")
-                        .param("address","1509 Culver St"))
+                        .param("address", "1509 Culver St"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void getInformationPerson() throws Exception {
         mockMvc.perform(get("/personInfo")
-                        .param("firstName","John")
-                        .param("lastName","Boyd"))
+                        .param("firstName", "John")
+                        .param("lastName", "Boyd"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getListOfChildrenByAddress() throws Exception{
+    public void getListOfChildrenByAddress() throws Exception {
         mockMvc.perform(get("/childAlert")
-                        .param("address","1509 Culver St"))
+                        .param("address", "1509 Culver St"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getListOfPhoneNumberByFireStationNumber() throws Exception{
+    public void getListOfPhoneNumberByFireStationNumber() throws Exception {
         mockMvc.perform(get("/phoneAlert")
-                        .param("firestation","1"))
+                        .param("firestation", "1"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getListOfPersonByStationNumber() throws Exception{
+    public void getListOfPersonByStationNumber() throws Exception {
         mockMvc.perform(get("/firestation")
-                        .param("stationNumber","1"))
+                        .param("stationNumber", "1"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getListOfPersonByStationsNumber() throws Exception{
+    public void getListOfPersonByStationsNumber() throws Exception {
         mockMvc.perform(get("/flood/stations")
-                        .param("stations","1,2"))
+                        .param("stations", "1,2"))
                 .andExpect(status().isOk());
     }
 

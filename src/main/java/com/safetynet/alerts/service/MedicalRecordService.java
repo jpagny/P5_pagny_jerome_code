@@ -26,7 +26,7 @@ public class MedicalRecordService {
         return data.getMedicalRecord().values();
     }
 
-    public Optional<MedicalRecord> getMedicalRecordByPerson(Person person){
+    public Optional<MedicalRecord> getMedicalRecordByPerson(Person person) {
         return StreamSupport.stream(data.getMedicalRecord().values().spliterator(), false)
                 .filter(theMedicalRecord ->
                         person.getFirstName().equalsIgnoreCase(theMedicalRecord.getFirstName())
@@ -36,7 +36,7 @@ public class MedicalRecordService {
 
     public MedicalRecord saveMedicalRecord(MedicalRecord medicalRecord) {
         String uniqueID = UUID.randomUUID().toString();
-        data.getMedicalRecord().put(uniqueID,medicalRecord);
+        data.getMedicalRecord().put(uniqueID, medicalRecord);
         return data.getMedicalRecord().get(uniqueID);
     }
 

@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = {IntegrationTestConfig.class})
 public class PersonRepositorySIT {
@@ -30,7 +30,7 @@ public class PersonRepositorySIT {
         Person person = personService.getPersons().iterator().next();
         String id = person.getId();
         person = personService.getPerson(id);
-        assertTrue(person != null);
+        assertNotNull(person);
     }
 
     @Test

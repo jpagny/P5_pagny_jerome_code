@@ -16,7 +16,7 @@ public class Utils {
         }
     }
 
-    public static int getAgeByBirthdate(String brithDate, String pattern){
+    public static int getAgeByBirthdate(String brithDate, String pattern) {
         LocalDate today = LocalDate.now();
         LocalDate birthday = LocalDate.parse(brithDate, DateTimeFormatter.ofPattern(pattern));
         return Period.between(birthday, today).getYears();
