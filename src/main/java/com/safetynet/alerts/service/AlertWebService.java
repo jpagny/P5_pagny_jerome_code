@@ -139,15 +139,15 @@ public class AlertWebService {
 
     public List<String> getListOfPhoneNumberByFireStationNumber(String fireStationNumber) {
         List<String> listOfPhoneNumber = new ArrayList<>();
-        Optional<FireStation> fireStation = fireStationService.getFireStation(Long.parseLong(fireStationNumber));
-
-        fireStation.ifPresent(station -> StreamSupport.stream(personService.getPersons().spliterator(), false)
+        FireStation fireStation = fireStationService.getFireStation(fireStationNumber);
+        /*
+        fireStation(station -> StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson -> station.getAddress().equalsIgnoreCase(thePerson.getAddress()))
                 .forEach(thePerson -> {
                     if (!listOfPhoneNumber.contains(thePerson.getPhone())) {
                         listOfPhoneNumber.add(thePerson.getPhone());
                     }
-                }));
+                }));*/
 
         return listOfPhoneNumber;
     }

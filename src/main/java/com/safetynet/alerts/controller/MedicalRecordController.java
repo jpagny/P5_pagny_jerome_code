@@ -20,7 +20,7 @@ public class MedicalRecordController {
     }
 
     @GetMapping("/medicalRecord/{id}")
-    public Optional<MedicalRecord> getMedicalRecord(@PathVariable final Long id) {
+    public MedicalRecord getMedicalRecord(@PathVariable final String id) {
         return medicalRecordService.getMedicalRecord(id);
     }
 
@@ -30,12 +30,12 @@ public class MedicalRecordController {
     }
 
     @PutMapping("/medicalRecord/{id}")
-    public MedicalRecord updateMedicalRecord(@PathVariable("id") final Long id, @RequestBody MedicalRecord medicalRecordToUpdate) {
-        Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecord(id);
+    public MedicalRecord updateMedicalRecord(@PathVariable("id") final String id, @RequestBody MedicalRecord medicalRecordToUpdate) {
+        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(id);
 
-        if (medicalRecord.isPresent()) {
+        if (medicalRecord != null) {
 
-            MedicalRecord currentMedicalRecord = medicalRecord.get();
+            MedicalRecord currentMedicalRecord = medicalRecord;
             String birthdate = medicalRecordToUpdate.getBirthdate();
             List<String> medications = medicalRecordToUpdate.getMedications();
             List<String> allergies = medicalRecordToUpdate.getAllergies();
@@ -62,7 +62,7 @@ public class MedicalRecordController {
     }
 
     @DeleteMapping("/medicalRecord/{id}")
-    public void deletePerson(@PathVariable("id") final Long id) {
+    public void deletePerson(@PathVariable("id") final String id) {
         medicalRecordService.deleteMedicalRecord(id);
     }
 

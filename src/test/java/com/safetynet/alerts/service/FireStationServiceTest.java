@@ -1,20 +1,16 @@
 package com.safetynet.alerts.service;
 
 import com.google.common.collect.Iterators;
+import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.repository.FireStationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.ArrayList;
-import java.util.Optional;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class FireStationServiceTest {
@@ -22,24 +18,20 @@ public class FireStationServiceTest {
     @Autowired
     private FireStationService fireStationService;
 
-    @MockBean
-    private FireStationRepository fireStationRepository;
+    @SpyBean
+    DataFromJsonFile data;
 
     @BeforeEach
     public void setUp() {
-        ArrayList<FireStation> listFireStation = new ArrayList<>();
+
+        data.getFireStations().clear();
 
         FireStation fireStation = new FireStation();
-        fireStation.setId(Long.parseLong("1"));
+        fireStation.setId("1");
         fireStation.setAddress("29 15th St");
         fireStation.setStation("1");
 
-        listFireStation.add(fireStation);
-
-        when(fireStationRepository.findById(Long.parseLong("1"))).thenReturn(Optional.of(fireStation));
-        when(fireStationRepository.findAll()).thenReturn(listFireStation);
-        doNothing().when(fireStationRepository).deleteById(Long.parseLong("1"));
-        when(fireStationRepository.save(fireStation)).thenReturn(fireStation);
+        data.getFireStations().put("1",fireStation);
     }
 
     @Test
@@ -51,15 +43,15 @@ public class FireStationServiceTest {
 
     @Test
     public void should_find_fireStation_by_id() {
-        Optional<FireStation> fireStation = fireStationService.getFireStation(Long.parseLong("1"));
-        assertTrue(fireStation.isPresent());
-        assertEquals("1", fireStation.get().getStation());
+        FireStation fireStation = fireStationService.getFireStation("1");
+        assertTrue(fireStation != null);
+        assertEquals("1", fireStation.getStation());
     }
 
     @Test
     public void should_save_fireStation() {
         FireStation fireStation = new FireStation();
-        fireStation.setId(Long.parseLong("1"));
+        fireStation.setId("1");
         fireStation.setAddress("29 15th St");
         fireStation.setStation("1");
 
@@ -70,8 +62,8 @@ public class FireStationServiceTest {
 
     @Test
     public void should_delete_fireStation_by_id() {
-        fireStationService.deleteFireStation(Long.parseLong("1"));
-        verify(fireStationRepository, times(1)).deleteById(any(Long.class));
+        fireStationService.deleteFireStation("1");
+        assertTrue(fireStationService.getFireStation("1") == null);
     }
 
 

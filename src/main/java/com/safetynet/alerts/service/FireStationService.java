@@ -1,12 +1,13 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.repository.FireStationRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -15,33 +16,35 @@ import java.util.stream.StreamSupport;
 public class FireStationService {
 
     @Autowired
-    private FireStationRepository fireStationRepository;
+    private DataFromJsonFile data;
 
-    public Optional<FireStation> getFireStation(final Long id) {
-        return fireStationRepository.findById(id);
+    public FireStation getFireStation(final String id) {
+        return data.getFireStations().get(id);
     }
 
     public Iterable<FireStation> getFireStations() {
-        return fireStationRepository.findAll();
+        return data.getFireStations().values();
     }
 
-    public Optional<FireStation> getFireStationByAddress(final String address){
-        return StreamSupport.stream(fireStationRepository.findAll().spliterator(), false)
+    public Optional<FireStation> getFireStationByAddress(final String address) {
+        return StreamSupport.stream(data.getFireStations().values().spliterator(), false)
                 .filter(theFireStation -> address.equalsIgnoreCase(theFireStation.getAddress()))
                 .findFirst();
     }
 
-    public Iterable<FireStation> getFireStationsByStationNumber(final int stationNumber){
-        return StreamSupport.stream(fireStationRepository.findAll().spliterator(), false)
+    public Iterable<FireStation> getFireStationsByStationNumber(final int stationNumber) {
+        return StreamSupport.stream(data.getFireStations().values().spliterator(), false)
                 .filter(theFireStation -> String.valueOf(stationNumber).equalsIgnoreCase(theFireStation.getStation()))
                 .collect(Collectors.toList());
     }
 
     public FireStation saveFireStation(FireStation fireStation) {
-        return fireStationRepository.save(fireStation);
+        String uniqueID = UUID.randomUUID().toString();
+        data.getFireStations().put(uniqueID, fireStation);
+        return data.getFireStations().get(uniqueID);
     }
 
-    public void deleteFireStation(final Long id) {
-        fireStationRepository.deleteById(id);
+    public void deleteFireStation(final String id) {
+        data.getFireStations().remove(id);
     }
 }

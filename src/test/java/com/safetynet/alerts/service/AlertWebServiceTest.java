@@ -2,7 +2,6 @@ package com.safetynet.alerts.service;
 
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class AlertWebServiceTest {
     private AlertWebService alertWebService;
 
     @MockBean
-    private PersonRepository personRepository;
+    private PersonService personService;
 
 
     @BeforeEach
@@ -45,7 +44,7 @@ public class AlertWebServiceTest {
         listPerson.add(p2);
         listPerson.add(p3);
 
-        when(personRepository.findAll()).thenReturn(listPerson);
+        when(personService.getPersons()).thenReturn(listPerson);
     }
 
     @Test

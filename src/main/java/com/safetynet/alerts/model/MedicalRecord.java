@@ -11,8 +11,7 @@ import java.util.List;
 public class MedicalRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(name = "first_name")
     private String firstName;

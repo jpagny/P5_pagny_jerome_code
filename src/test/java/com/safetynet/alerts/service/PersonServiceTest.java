@@ -1,20 +1,16 @@
 package com.safetynet.alerts.service;
 
 import com.google.common.collect.Iterators;
+import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.ArrayList;
-import java.util.Optional;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class PersonServiceTest {
@@ -22,16 +18,15 @@ public class PersonServiceTest {
     @Autowired
     private PersonService personService;
 
-    @MockBean
-    private PersonRepository personRepository;
+    @SpyBean
+    DataFromJsonFile data;
 
     @BeforeEach
     public void setUp() {
-
-        ArrayList<Person> listPerson = new ArrayList<>();
+        data.getPersons().clear();
 
         Person person = new Person();
-        person.setId(Long.parseLong("1"));
+        person.setId("1");
         person.setFirstName("John");
         person.setLastName("Rick");
         person.setAddress("29 15th St\t");
@@ -40,17 +35,7 @@ public class PersonServiceTest {
         person.setEmail("john.rick@gmail.com");
         person.setPhone("07894235694");
 
-        listPerson.add(person);
-
-        when(personRepository.findById(Long.parseLong("1")))
-                .thenReturn(Optional.of(person));
-
-        when(personRepository.findAll()).thenReturn(listPerson);
-
-        doNothing().when(personRepository).deleteById(Long.parseLong("1"));
-
-        when(personRepository.save(person)).thenReturn(person);
-
+        data.getPersons().put("1", person);
     }
 
     @Test
@@ -62,16 +47,16 @@ public class PersonServiceTest {
 
     @Test
     public void should_find_person_by_id() {
-        Optional<Person> person = personService.getPerson(Long.parseLong("1"));
-        assertTrue(person.isPresent());
-        assertEquals("John", person.get().getFirstName());
+        Person person = personService.getPerson("1");
+        assertTrue(person != null);
+        assertEquals("John", person.getFirstName());
     }
 
     @Test
     public void should_save_person() {
         Person person = new Person();
-        person.setId(Long.parseLong("1"));
-        person.setFirstName("John");
+        person.setId("2");
+        person.setFirstName("Joahn");
         person.setLastName("Rick");
         person.setAddress("29 15th St\t");
         person.setCity("Chicago");
@@ -86,8 +71,8 @@ public class PersonServiceTest {
 
     @Test
     public void should_delete_person_by_id() {
-        personService.deletePerson(Long.parseLong("1"));
-        verify(personRepository, times(1)).deleteById(any(Long.class));
+        personService.deletePerson("1");
+        assertTrue(personService.getPerson("1") == null);
     }
 
 

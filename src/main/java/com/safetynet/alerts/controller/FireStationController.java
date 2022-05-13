@@ -19,7 +19,7 @@ public class FireStationController {
     }
 
     @GetMapping("/firestation/{id}")
-    public Optional<FireStation> getFireStation(@PathVariable final Long id) {
+    public FireStation getFireStation(@PathVariable final String id) {
         return fireStationService.getFireStation(id);
     }
 
@@ -29,12 +29,12 @@ public class FireStationController {
     }
 
     @PutMapping("/firestation/{id}")
-    public FireStation updateFireStation(@PathVariable("id") final Long id, @RequestBody FireStation fireStationToUpdate) {
-        Optional<FireStation> fireStation = fireStationService.getFireStation(id);
+    public FireStation updateFireStation(@PathVariable("id") final String id, @RequestBody FireStation fireStationToUpdate) {
+        FireStation fireStation = fireStationService.getFireStation(id);
 
-        if (fireStation.isPresent()) {
+        if (fireStation != null) {
 
-            FireStation currentFireStation = fireStation.get();
+            FireStation currentFireStation = fireStation;
             String address = fireStationToUpdate.getAddress();
             String station = fireStationToUpdate.getStation();
 
@@ -56,7 +56,7 @@ public class FireStationController {
     }
 
     @DeleteMapping("/firestation/{id}")
-    public void deleteFireStation(@PathVariable("id") final Long id) {
+    public void deleteFireStation(@PathVariable("id") final String id) {
         fireStationService.deleteFireStation(id);
     }
 

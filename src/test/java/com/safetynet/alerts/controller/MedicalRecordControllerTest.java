@@ -42,7 +42,7 @@ public class MedicalRecordControllerTest {
     public void createMedicalRecord() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId(Long.parseLong("1"));
+        medicalRecord.setId("1");
         medicalRecord.setFirstName("John");
         medicalRecord.setLastName("Rick");
         medicalRecord.setBirthdate("12/17/2021");
@@ -64,7 +64,7 @@ public class MedicalRecordControllerTest {
     public void updateMedicalRecord() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId(Long.parseLong("1"));
+        medicalRecord.setId("1");
         ArrayList<String> medications = new ArrayList<>();
         medications.add("aznol:150mg");
         medicalRecord.setMedications(medications);

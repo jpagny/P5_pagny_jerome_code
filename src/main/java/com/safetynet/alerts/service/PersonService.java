@@ -1,49 +1,50 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Data
+
 @Service
 public class PersonService {
 
     @Autowired
-    private PersonRepository personRepository;
+    private DataFromJsonFile data;
 
-    public Optional<Person> getPerson(final Long id) {
-        return personRepository.findById(id);
+    public Person getPerson(final String id) {
+        return data.getPersons().get(id);
     }
 
     public Iterable<Person> getPersons() {
-        return personRepository.findAll();
+        return data.getPersons().values();
     }
 
     public Iterable<Person> getFamilyMemberByChild(Person child) {
-        return StreamSupport.stream(personRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(data.getPersons().values().spliterator(), false)
                 .filter(thePerson -> child.getLastName().equalsIgnoreCase(thePerson.getLastName())
                         && !child.getFirstName().equalsIgnoreCase(thePerson.getFirstName()))
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Person> getPersonsByAddress(String address){
-        return StreamSupport.stream(personRepository.findAll().spliterator(), false)
+    public Iterable<Person> getPersonsByAddress(String address) {
+        return StreamSupport.stream(data.getPersons().values().spliterator(), false)
                 .filter(thePerson -> address.equalsIgnoreCase(thePerson.getAddress()))
                 .collect(Collectors.toList());
     }
 
     public Person savePerson(Person person) {
-        return personRepository.save(person);
+        String uniqueID = UUID.randomUUID().toString();
+        data.getPersons().put(uniqueID, person);
+        return data.getPersons().get(uniqueID);
     }
 
-    public void deletePerson(final Long id) {
-        personRepository.deleteById(id);
+    public void deletePerson(final String id) {
+        data.getPersons().remove(id);
     }
 
 }

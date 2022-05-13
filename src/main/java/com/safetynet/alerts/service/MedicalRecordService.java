@@ -1,13 +1,14 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.MedicalRecordRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @Data
@@ -15,30 +16,32 @@ import java.util.stream.StreamSupport;
 public class MedicalRecordService {
 
     @Autowired
-    private MedicalRecordRepository medicalRecordRepository;
+    private DataFromJsonFile data;
 
-    public Optional<MedicalRecord> getMedicalRecord(final Long id) {
-        return medicalRecordRepository.findById(id);
+    public MedicalRecord getMedicalRecord(final String id) {
+        return data.getMedicalRecord().get(id);
     }
 
     public Iterable<MedicalRecord> getMedicalRecords() {
-        return medicalRecordRepository.findAll();
+        return data.getMedicalRecord().values();
     }
 
     public Optional<MedicalRecord> getMedicalRecordByPerson(Person person){
-        return StreamSupport.stream(medicalRecordRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(data.getMedicalRecord().values().spliterator(), false)
                 .filter(theMedicalRecord ->
                         person.getFirstName().equalsIgnoreCase(theMedicalRecord.getFirstName())
                                 && person.getLastName().equalsIgnoreCase(theMedicalRecord.getLastName()))
                 .findFirst();
     }
 
-    public MedicalRecord saveMedicalRecord(MedicalRecord person) {
-        return medicalRecordRepository.save(person);
+    public MedicalRecord saveMedicalRecord(MedicalRecord medicalRecord) {
+        String uniqueID = UUID.randomUUID().toString();
+        data.getMedicalRecord().put(uniqueID,medicalRecord);
+        return data.getMedicalRecord().get(uniqueID);
     }
 
-    public void deleteMedicalRecord(final Long id) {
-        medicalRecordRepository.deleteById(id);
+    public void deleteMedicalRecord(final String id) {
+        data.getMedicalRecord().remove(id);
     }
 
 

@@ -5,8 +5,6 @@ import com.safetynet.alerts.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 public class PersonController {
 
@@ -19,7 +17,7 @@ public class PersonController {
     }
 
     @GetMapping("/person/{id}")
-    public Optional<Person> getPerson(@PathVariable final Long id) {
+    public Person getPerson(@PathVariable final String id) {
         return personService.getPerson(id);
     }
 
@@ -29,12 +27,12 @@ public class PersonController {
     }
 
     @PutMapping("/person/{id}")
-    public Person updatePerson(@PathVariable("id") final Long id, @RequestBody Person personToUpdate) {
-        Optional<Person> person = personService.getPerson(id);
+    public Person updatePerson(@PathVariable("id") final String id, @RequestBody Person personToUpdate) {
+        Person person = personService.getPerson(id);
 
-        if (person.isPresent()) {
+        if (person != null) {
 
-            Person currentPerson = person.get();
+            Person currentPerson = person;
             String address = personToUpdate.getAddress();
             String city = personToUpdate.getCity();
             String zip = personToUpdate.getZip();
@@ -67,7 +65,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/person/{id}")
-    public void deletePerson(@PathVariable("id") final Long id) {
+    public void deletePerson(@PathVariable("id") final String id) {
         personService.deletePerson(id);
     }
 

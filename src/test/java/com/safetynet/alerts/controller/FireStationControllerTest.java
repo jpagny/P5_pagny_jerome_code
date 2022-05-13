@@ -39,7 +39,7 @@ public class FireStationControllerTest {
     public void createFireStation() throws Exception {
 
         FireStation fireStation = new FireStation();
-        fireStation.setId(Long.parseLong("1"));
+        fireStation.setId("1");
         fireStation.setAddress("29 16th St");
         fireStation.setStation("1");
 
