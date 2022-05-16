@@ -3,6 +3,7 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.controller.config.IntegrationTestConfig;
 import com.safetynet.alerts.model.DataFromJsonFile;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,8 @@ public class AlertWebControllerITTest {
     }
 
     @Test
-    public void getAllEmailByCity() throws Exception {
+    @DisplayName("Show all email by city")
+    public void showAllEmailByCity() throws Exception {
         mockMvc.perform(get("/communityEmail")
                         .param("city", "Culver"))
                 .andExpect(status().isOk())
@@ -49,12 +51,12 @@ public class AlertWebControllerITTest {
     }
 
     @Test
+    @DisplayName("List persons and number station by an address")
     public void getPersonsAndNumberFireStationByAddress() throws Exception {
         mockMvc.perform(get("/fire")
                         .param("address", "1509 Culver St"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("number fireStation\":\"3\"")))
-                .andExpect(content().string(containsString("list of persons")));
+                .andExpect(content().string(containsString("\"address\":\"1509 Culver St\",\"numberStation\":\"3\"")));
     }
 
     @Test

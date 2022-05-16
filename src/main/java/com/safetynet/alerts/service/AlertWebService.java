@@ -1,10 +1,22 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.constant.App;
+import com.safetynet.alerts.dto.FireDTO;
+import com.safetynet.alerts.dto.HouseholdDTO;
+import com.safetynet.alerts.model.FireStationModel;
+import com.safetynet.alerts.model.MedicalRecordModel;
+import com.safetynet.alerts.model.PersonModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class AlertWebService {
-/*
+
     @Autowired
     private PersonService personService;
 
@@ -27,40 +39,36 @@ public class AlertWebService {
         return listEmail;
     }
 
-    public Map<String, Object> getPersonsAndNumberFireStationByAddress(String address) {
+    public FireDTO getPersonsAndNumberFireStationByAddress(String address) {
 
-        Map<String, Object> data = new HashMap<>();
-        List<Object> listOfPersons = new ArrayList<>();
-        Optional<FireStation> fireStation = fireStationService.getFireStationByAddress(address);
+        Optional<FireStationModel> fireStation = fireStationService.getFireStationByAddress(address);
 
-        data.put("address", address);
+        if ( fireStation.isPresent() ) {
 
-        fireStation.ifPresent(station -> data.put("number fireStation", station.getStation()));
+            List<HouseholdDTO> listHouseholdDTO = new ArrayList<>();
 
-        personService.getPersons().forEach(person -> {
+            StreamSupport.stream(personService.getPersons().spliterator(), false)
+                    .filter(thePerson -> address.equalsIgnoreCase(thePerson.getAddress()))
+                    .forEach(thePerson -> {
 
-            if (person.getAddress().equalsIgnoreCase(address)) {
+                        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                StringBuilder personDataBuild = new StringBuilder();
-                Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
+                        if (medicalRecord.isPresent()) {
+                            String firstName = thePerson.getFirstName();
+                            String lastName = thePerson.getLastName();
+                            String phone = thePerson.getPhone();
+                            int age = medicalRecordService.getAge(medicalRecord.get());
+                            List<String> medications = medicalRecord.get().getMedications();
+                            List<String> allergies = medicalRecord.get().getAllergies();
 
-                personDataBuild.append("first name:").append(person.getFirstName()).append(App.SEPARATOR);
-                personDataBuild.append("last name:").append(person.getLastName()).append(App.SEPARATOR);
-                personDataBuild.append("phone:").append(person.getPhone()).append(App.SEPARATOR);
+                            listHouseholdDTO.add(new HouseholdDTO(firstName,lastName, phone, age, medications, allergies));
+                        }
+            });
 
-                if (medicalRecord.isPresent()) {
-                    personDataBuild.append("age:").append(medicalRecordService.getAge(medicalRecord.get())).append(App.SEPARATOR);
-                    personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(App.SEPARATOR);
-                    personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
-                }
+            return new FireDTO(address,fireStation.get().getStation(),listHouseholdDTO);
+        }
 
-                listOfPersons.add(personDataBuild);
-            }
-        });
-
-        data.put("list of persons", listOfPersons);
-
-        return data;
+        return null;
     }
 
     public List<String> getInformationPerson(String firstName, String lastName) {
@@ -74,7 +82,7 @@ public class AlertWebService {
                 .forEach(thePerson -> {
 
                     StringBuilder personDataBuild = new StringBuilder();
-                    Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+                    Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
                     personDataBuild.append("first name:").append(thePerson.getFirstName()).append(App.SEPARATOR);
                     personDataBuild.append("last name:").append(thePerson.getLastName()).append(App.SEPARATOR);
@@ -101,12 +109,12 @@ public class AlertWebService {
                 .filter(thePerson ->
                         address.equalsIgnoreCase(thePerson.getAddress()))
                 .forEach(thePerson -> {
-                    Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+                    Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
                     if (medicalRecord.isPresent()) {
 
                         if (medicalRecordService.isMinor(medicalRecord.get())) {
-                            Iterable<Person> familyMember = personService.getFamilyMemberByChild(thePerson);
+                            Iterable<PersonModel> familyMember = personService.getFamilyMemberByChild(thePerson);
                             StringBuilder childDataBuild = new StringBuilder();
 
                             childDataBuild.append(thePerson.getFirstName()).append(App.SEPARATOR);
@@ -125,7 +133,7 @@ public class AlertWebService {
 
     public List<String> getListOfPhoneNumberByFireStationNumber(String fireStationNumber) {
         List<String> listOfPhoneNumber = new ArrayList<>();
-        FireStation fireStation = fireStationService.getFireStation(fireStationNumber);
+        FireStationModel fireStation = fireStationService.getFireStation(fireStationNumber);
 
         if (fireStation != null) {
             StreamSupport.stream(personService.getPersons().spliterator(), false)
@@ -143,18 +151,18 @@ public class AlertWebService {
     public Map<String, String> getListOfPersonByStationNumber(String stationNumber) {
 
         Map<String, String> data = new LinkedHashMap<>();
-        ArrayList<Person> listOfPersons = new ArrayList<>();
+        ArrayList<PersonModel> listOfPersons = new ArrayList<>();
         AtomicInteger countChildren = new AtomicInteger();
         AtomicInteger countAdult = new AtomicInteger();
 
         StreamSupport.stream(fireStationService.getFireStationsByStationNumber(Integer.parseInt(stationNumber)).spliterator(), false)
                 .forEach(theStation -> {
-                    List<Person> list = StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).collect(Collectors.toList());
+                    List<PersonModel> list = StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).collect(Collectors.toList());
                     listOfPersons.addAll(list);
                 });
 
         listOfPersons.forEach(thePerson -> {
-            Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+            Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
             if (medicalRecord.isPresent()) {
                 if (medicalRecordService.isMinor(medicalRecord.get())) {
                     countChildren.getAndIncrement();
@@ -187,7 +195,7 @@ public class AlertWebService {
 
                     StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).forEach(thePerson -> {
 
-                        Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+                        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
                         if (medicalRecord.isPresent()) {
 
@@ -210,5 +218,5 @@ public class AlertWebService {
         return listOfFireStation;
     }
 
-*/
+
 }

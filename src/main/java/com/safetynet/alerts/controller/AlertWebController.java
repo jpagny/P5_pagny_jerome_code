@@ -1,5 +1,6 @@
 package com.safetynet.alerts.controller;
 
+import com.safetynet.alerts.dto.FireDTO;
 import com.safetynet.alerts.service.AlertWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import java.util.Map;
 
 @RestController
 public class AlertWebController {
-    /*
 
     @Autowired
     private AlertWebService alertWebService;
@@ -23,7 +23,7 @@ public class AlertWebController {
     }
 
     @GetMapping("/fire")
-    public Map<String, Object> getPersonsAndNumberFireStationByAddress(@RequestParam String address) {
+    public FireDTO getPersonsAndNumberFireStationByAddress(@RequestParam String address) {
         return alertWebService.getPersonsAndNumberFireStationByAddress(address);
     }
 
@@ -51,5 +51,5 @@ public class AlertWebController {
     public Map<String, Map<String, String>> getListOfPersonsByStationsNumber(@RequestParam int[] stations) {
         return alertWebService.getListOfPersonByStationsNumber(stations);
     }
-*/
+
 }
