@@ -42,6 +42,11 @@ public class FireStationService {
         return data.getFireStations().get(uniqueID);
     }
 
+    public FireStation updateFireStation(FireStation fireStation){
+        data.getFireStations().put(fireStation.getId(),fireStation);
+        return fireStation;
+    }
+
     public void deleteFireStation(final String id) {
         data.getFireStations().remove(id);
     }

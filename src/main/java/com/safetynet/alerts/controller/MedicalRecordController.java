@@ -51,7 +51,7 @@ public class MedicalRecordController {
                 currentMedicalRecord.setAllergies(allergies);
             }
 
-            medicalRecordService.saveMedicalRecord(currentMedicalRecord);
+            medicalRecordService.updateMedicalRecord(currentMedicalRecord);
             return currentMedicalRecord;
 
         } else {

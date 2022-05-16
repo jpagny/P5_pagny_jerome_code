@@ -41,6 +41,11 @@ public class MedicalRecordService {
         return data.getMedicalRecord().get(uniqueID);
     }
 
+    public MedicalRecord updateMedicalRecord(MedicalRecord medicalRecord){
+        data.getMedicalRecord().put(medicalRecord.getId(),medicalRecord);
+        return medicalRecord;
+    }
+
     public void deleteMedicalRecord(final String id) {
         data.getMedicalRecord().remove(id);
     }

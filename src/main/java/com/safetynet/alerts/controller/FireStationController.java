@@ -44,7 +44,7 @@ public class FireStationController {
                 currentFireStation.setStation(station);
             }
 
-            fireStationService.saveFireStation(currentFireStation);
+            fireStationService.updateFireStation(currentFireStation);
             return currentFireStation;
 
         } else {

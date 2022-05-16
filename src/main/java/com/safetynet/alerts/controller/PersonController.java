@@ -55,7 +55,7 @@ public class PersonController {
                 currentPerson.setEmail(email);
             }
 
-            personService.savePerson(currentPerson);
+            personService.updatePerson(currentPerson);
             return currentPerson;
 
         } else {

@@ -42,6 +42,11 @@ public class PersonService {
         return data.getPersons().get(uniqueID);
     }
 
+    public Person updatePerson(Person person){
+        data.getPersons().put(person.getId(),person);
+        return person;
+    }
+
     public void deletePerson(final String id) {
         data.getPersons().remove(id);
     }
