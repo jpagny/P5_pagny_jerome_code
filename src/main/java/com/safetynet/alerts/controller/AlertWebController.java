@@ -2,6 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.dto.ChildAlertDTO;
 import com.safetynet.alerts.dto.FireDTO;
+import com.safetynet.alerts.dto.HouseholdFireStationDTO;
 import com.safetynet.alerts.dto.PersonInfoDTO;
 import com.safetynet.alerts.service.AlertWebService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,8 @@ public class AlertWebController {
     }
 
     @GetMapping("/firestation")
-    public Map<String, String> getListOfPersonByStationNumber(@RequestParam String stationNumber) {
-        return alertWebService.getListOfPersonByStationNumber(stationNumber);
+    public List<HouseholdFireStationDTO> getListOfHouseholdsByStationNumber(@RequestParam String stationNumber) {
+        return alertWebService.getListOfHouseholdByStationNumber(stationNumber);
     }
 
     @GetMapping("/flood/stations")

@@ -1,10 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.constant.App;
-import com.safetynet.alerts.dto.ChildAlertDTO;
-import com.safetynet.alerts.dto.FireDTO;
-import com.safetynet.alerts.dto.HouseholdDTO;
-import com.safetynet.alerts.dto.PersonInfoDTO;
+import com.safetynet.alerts.dto.*;
 import com.safetynet.alerts.model.FireStationModel;
 import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.model.PersonModel;
@@ -13,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -45,7 +41,7 @@ public class AlertWebService {
 
         Optional<FireStationModel> fireStation = fireStationService.getFireStationByAddress(address);
 
-        if ( fireStation.isPresent() ) {
+        if (fireStation.isPresent()) {
 
             List<HouseholdDTO> listHouseholdDTO = new ArrayList<>();
 
@@ -63,11 +59,11 @@ public class AlertWebService {
                             List<String> medications = medicalRecord.get().getMedications();
                             List<String> allergies = medicalRecord.get().getAllergies();
 
-                            listHouseholdDTO.add(new HouseholdDTO(firstName,lastName, phone, age, medications, allergies));
+                            listHouseholdDTO.add(new HouseholdDTO(firstName, lastName, phone, age, medications, allergies));
                         }
-            });
+                    });
 
-            return new FireDTO(address,fireStation.get().getStation(),listHouseholdDTO);
+            return new FireDTO(address, fireStation.get().getStation(), listHouseholdDTO);
         }
 
         return null;
@@ -79,7 +75,7 @@ public class AlertWebService {
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson ->
-                                lastName.equalsIgnoreCase(thePerson.getLastName()))
+                        lastName.equalsIgnoreCase(thePerson.getLastName()))
                 .forEach(thePerson -> {
 
                     Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
@@ -94,7 +90,7 @@ public class AlertWebService {
                         List<String> medications = medicalRecord.get().getMedications();
                         List<String> allergies = medicalRecord.get().getAllergies();
 
-                        listOfPersonInfos.add(new PersonInfoDTO(theFirstName,lastName,age,address,city,zip,email,medications,allergies));
+                        listOfPersonInfos.add(new PersonInfoDTO(theFirstName, lastName, age, address, city, zip, email, medications, allergies));
 
                     }
 
@@ -121,7 +117,7 @@ public class AlertWebService {
                             String lastName = thePerson.getLastName();
                             int age = medicalRecordService.getAge(medicalRecord.get());
 
-                            listOfChildren.add(new ChildAlertDTO(firstName,lastName,age,familyMember));
+                            listOfChildren.add(new ChildAlertDTO(firstName, lastName, age, familyMember));
                         }
                     }
                 });
@@ -146,41 +142,44 @@ public class AlertWebService {
         return listOfPhoneNumber;
     }
 
-    public Map<String, String> getListOfPersonByStationNumber(String stationNumber) {
+    public List<HouseholdFireStationDTO> getListOfHouseholdByStationNumber(String stationNumber) {
 
-        Map<String, String> data = new LinkedHashMap<>();
-        ArrayList<PersonModel> listOfPersons = new ArrayList<>();
-        AtomicInteger countChildren = new AtomicInteger();
-        AtomicInteger countAdult = new AtomicInteger();
+        List<HouseholdFireStationDTO> householdFireStationDTO = new ArrayList<>();
 
         StreamSupport.stream(fireStationService.getFireStationsByStationNumber(Integer.parseInt(stationNumber)).spliterator(), false)
                 .forEach(theStation -> {
-                    List<PersonModel> list = StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).collect(Collectors.toList());
-                    listOfPersons.addAll(list);
+
+                    AtomicInteger countChildren = new AtomicInteger();
+                    AtomicInteger countAdult = new AtomicInteger();
+                    List<PersonStationDTO> listOfPersons = new ArrayList<>();
+
+                    StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false)
+                            .forEach(thePerson -> {
+
+                                String firstName = thePerson.getFirstName();
+                                String lastName = thePerson.getLastName();
+                                String address = thePerson.getAddress();
+                                String phone = thePerson.getPhone();
+                                listOfPersons.add(new PersonStationDTO(firstName, lastName, address, phone));
+
+                                Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+                                if (medicalRecord.isPresent()) {
+                                    if (medicalRecordService.isMinor(medicalRecord.get())) {
+                                        countChildren.getAndIncrement();
+                                    } else {
+                                        countAdult.getAndIncrement();
+                                    }
+                                }
+                            });
+
+                    String numberStation = theStation.getStation();
+                    int countAdultPersons = countAdult.get();
+                    int countChildPersons = countChildren.get();
+
+                    householdFireStationDTO.add(new HouseholdFireStationDTO(numberStation, listOfPersons, countAdultPersons, countChildPersons));
                 });
 
-        listOfPersons.forEach(thePerson -> {
-            Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
-            if (medicalRecord.isPresent()) {
-                if (medicalRecordService.isMinor(medicalRecord.get())) {
-                    countChildren.getAndIncrement();
-                } else {
-                    countAdult.getAndIncrement();
-                }
-            }
-
-            String personDataBuilder = thePerson.getFirstName() + App.SEPARATOR +
-                    thePerson.getLastName() + App.SEPARATOR +
-                    thePerson.getAddress() + App.SEPARATOR +
-                    thePerson.getPhone();
-
-            data.put("person id " + thePerson.getId() + " :", personDataBuilder);
-        });
-
-        data.put("count total children", countChildren.toString());
-        data.put("count total adults:", countAdult.toString());
-
-        return data;
+        return householdFireStationDTO;
     }
 
     public Map<String, Map<String, String>> getListOfPersonByStationsNumber(int[] stationNumber) {
