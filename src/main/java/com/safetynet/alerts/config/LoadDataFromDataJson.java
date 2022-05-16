@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.model.PersonModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +36,7 @@ public class LoadDataFromDataJson {
 
         Map<String, PersonModel> personData = buildPersonsData();
         Map<String, FireStation> fireStationMap = buildFireStationData();
-        Map<String, MedicalRecord> medicalRecordMap = buildMedicalRecordData();
+        Map<String, MedicalRecordModel> medicalRecordMap = buildMedicalRecordData();
 
         LOG.debug("Loaded from a Json file : \r\n"
                 + (personData.size()) + " persons \r\n"
@@ -58,9 +58,14 @@ public class LoadDataFromDataJson {
         List<PersonModel> personModelList = mapper.readValue(personNodes, new TypeReference<>() {});
 
         personModelList.forEach(thePerson -> {
-
-            PersonModel person = new PersonModel(thePerson.getFirstName(),thePerson.getLastName(),thePerson.getAddress(),thePerson.getCity(),thePerson.getZip(),thePerson.getPhone(),thePerson.getEmail());
-
+            PersonModel person = new PersonModel(thePerson.getFirstName(),
+                    thePerson.getLastName(),
+                    thePerson.getAddress(),
+                    thePerson.getCity(),
+                    thePerson.getZip(),
+                    thePerson.getPhone(),
+                    thePerson.getEmail()
+            );
             personMap.put(person.getId(), person);
         });
 
@@ -84,18 +89,22 @@ public class LoadDataFromDataJson {
         return fireStationMap;
     }
 
-    private static Map<String, MedicalRecord> buildMedicalRecordData() throws IOException {
+    private static Map<String, MedicalRecordModel> buildMedicalRecordData() throws IOException {
 
-        Map<String, MedicalRecord> medicalRecordMap = new HashMap<>();
+        Map<String, MedicalRecordModel> medicalRecordMap = new HashMap<>();
         JsonNode nodes = loadNodes();
         String medicalRecordNodes = nodes.get("medicalrecords").toString();
-        List<MedicalRecord> medicalRecordList = mapper.readValue(medicalRecordNodes, new TypeReference<>() {
-        });
+        List<MedicalRecordModel> medicalRecordModelList = mapper.readValue(medicalRecordNodes, new TypeReference<>() {});
 
-        medicalRecordList.forEach(theMedicalRecord -> {
-            String uniqueID = UUID.randomUUID().toString();
-            theMedicalRecord.setId(uniqueID);
-            medicalRecordMap.put(uniqueID, theMedicalRecord);
+        medicalRecordModelList.forEach(theMedicalRecord -> {
+            MedicalRecordModel medicalRecord = new MedicalRecordModel(
+                    theMedicalRecord.getFirstName(),
+                    theMedicalRecord.getLastName(),
+                    theMedicalRecord.getBirthdate(),
+                    theMedicalRecord.getMedications(),
+                    theMedicalRecord.getAllergies()
+            );
+            medicalRecordMap.put(medicalRecord.getId(), theMedicalRecord);
         });
 
         return medicalRecordMap;

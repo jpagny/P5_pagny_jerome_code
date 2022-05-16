@@ -1,6 +1,6 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,45 +14,37 @@ public class MedicalRecordController {
     private MedicalRecordService medicalRecordService;
 
     @GetMapping("/medicalRecords")
-    public Iterable<MedicalRecord> getMedicalRecords() {
+    public Iterable<MedicalRecordModel> getMedicalRecords() {
         return medicalRecordService.getMedicalRecords();
     }
 
     @GetMapping("/medicalRecord/{id}")
-    public MedicalRecord getMedicalRecord(@PathVariable final String id) {
+    public MedicalRecordModel getMedicalRecord(@PathVariable final String id) {
         return medicalRecordService.getMedicalRecord(id);
     }
 
     @PostMapping("/medicalRecord")
-    public MedicalRecord createMedicalRecord(@RequestBody MedicalRecord medicalRecordToSave) {
-        return medicalRecordService.saveMedicalRecord(medicalRecordToSave);
+    public MedicalRecordModel createMedicalRecord(@RequestBody MedicalRecordModel medicalRecordModelToSave) {
+        return medicalRecordService.saveMedicalRecord(medicalRecordModelToSave);
     }
 
     @PutMapping("/medicalRecord/{id}")
-    public MedicalRecord updateMedicalRecord(@PathVariable("id") final String id, @RequestBody MedicalRecord medicalRecordToUpdate) {
-        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(id);
+    public MedicalRecordModel updateMedicalRecord(@PathVariable("id") final String id, @RequestBody MedicalRecordModel medicalRecordModelToUpdate) {
+        MedicalRecordModel medicalRecordModel = medicalRecordService.getMedicalRecord(id);
 
-        if (medicalRecord != null) {
+        if (medicalRecordModel != null) {
 
-            MedicalRecord currentMedicalRecord = medicalRecord;
-            String birthdate = medicalRecordToUpdate.getBirthdate();
-            List<String> medications = medicalRecordToUpdate.getMedications();
-            List<String> allergies = medicalRecordToUpdate.getAllergies();
+            String firstName = medicalRecordModel.getFirstName();
+            String lastName = medicalRecordModel.getLastName();
 
-            if (birthdate != null) {
-                currentMedicalRecord.setBirthdate(birthdate);
-            }
+            String birthdate = medicalRecordModelToUpdate.getBirthdate() == null ? medicalRecordModel.getBirthdate() : medicalRecordModelToUpdate.getBirthdate();
+            List<String> medications = medicalRecordModelToUpdate.getMedications() == null ? medicalRecordModel.getMedications() : medicalRecordModelToUpdate.getMedications();
+            List<String> allergies = medicalRecordModelToUpdate.getAllergies() == null ? medicalRecordModel.getAllergies() : medicalRecordModelToUpdate.getAllergies();
 
-            if (medications != null) {
-                currentMedicalRecord.setMedications(medications);
-            }
+            MedicalRecordModel medicalRecordModelUpdated = new MedicalRecordModel(id,firstName,lastName,birthdate,medications,allergies);
 
-            if (allergies != null) {
-                currentMedicalRecord.setAllergies(allergies);
-            }
-
-            medicalRecordService.updateMedicalRecord(currentMedicalRecord);
-            return currentMedicalRecord;
+            medicalRecordService.updateMedicalRecord(medicalRecordModelUpdated);
+            return medicalRecordModelUpdated;
 
         } else {
             return null;

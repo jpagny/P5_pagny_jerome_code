@@ -2,16 +2,17 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.controller.config.IntegrationTestConfig;
 import com.safetynet.alerts.model.DataFromJsonFile;
-import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.utility.Utils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,15 +22,17 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {IntegrationTestConfig.class})
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class MedicalRecordControllerITTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class MedicalRecordModelControllerITTest {
 
     @SpyBean
     private DataFromJsonFile data;
@@ -46,14 +49,19 @@ public class MedicalRecordControllerITTest {
     }
 
     @Test
-    public void getAllMedicalRecords() throws Exception {
+    @DisplayName("Show information of all medical record")
+    public void showInformationOfAllMedicalRecord() throws Exception {
+
+        String allPersonsJson = Utils.asJsonString(data.getMedicalRecords().values());
+
         mockMvc.perform(get("/medicalRecords"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("medications")));
+                .andExpect(content().json(allPersonsJson));
     }
 
     @Test
-    public void getMedicalRecordById() throws Exception {
+    @DisplayName("Show information of a medical record by id")
+    public void showInformationOfAMedicalRecordById() throws Exception {
 
         AtomicReference<String> key = new AtomicReference<>("");
 
@@ -63,35 +71,41 @@ public class MedicalRecordControllerITTest {
             }
         });
 
+        String medicalRecordJson = Utils.asJsonString(data.getMedicalRecords().get(key.get()));
+
         mockMvc.perform(get("/medicalRecord/" + key))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("medications")));
+                .andExpect(content().json(medicalRecordJson));
     }
 
     @Test
-    public void createMedicalRecord() throws Exception {
+    @DisplayName("Create a medical record and return the medical record's information")
+    public void createAMedicalRecordAndReturnTheMedicalRecordSInformation() throws Exception {
 
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId("1");
-        medicalRecord.setFirstName("John");
-        medicalRecord.setLastName("Rick");
-        medicalRecord.setBirthdate("12/17/2021");
         ArrayList<String> medications = new ArrayList<>();
         medications.add("aznol:350mg");
         medications.add("hydrapermazol:100mg");
-        medicalRecord.setMedications(medications);
-        medicalRecord.setAllergies(new ArrayList<>());
+
+        MedicalRecordModel medicalRecordModel = new MedicalRecordModel("John",
+                "Rick",
+                "12/17/2021",
+                medications,
+                new ArrayList<>());
+
+        String newPersonJson = Utils.asJsonString(medicalRecordModel);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/medicalRecord")
-                        .content(Utils.asJsonString(medicalRecord))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .content(newPersonJson)
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("John")));
+                .andExpect(content().json(newPersonJson));
     }
 
     @Test
+    @DisplayName("Updated an information from a medical record by id")
     public void updateMedicalRecord() throws Exception {
 
         AtomicReference<String> key = new AtomicReference<>("");
@@ -102,29 +116,38 @@ public class MedicalRecordControllerITTest {
             }
         });
 
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId(String.valueOf(key));
-        medicalRecord.setBirthdate("03/07/1984");
+        MedicalRecordModel theMedicalRecord = data.getMedicalRecords().get(key.get());
+
+        String jsonToUpdate = "{\"medications\":[\"terazine:650mg\", \"hydrapermazol:1000mg\"], " +
+                "\"allergies\":[\"peanut:650mg\"]}";
 
         ArrayList<String> medications = new ArrayList<>();
-        medications.add("pharmacol:5000mg");
-        medicalRecord.setMedications(medications);
+        medications.add("terazine:650mg");
+        medications.add("hydrapermazol:1000mg");
 
         ArrayList<String> allergies = new ArrayList<>();
-        allergies.add("peanut");
-        medicalRecord.setAllergies(allergies);
+        allergies.add("peanut:650mg");
+
+        MedicalRecordModel medicalRecordUpdated = new MedicalRecordModel(key.get(), theMedicalRecord.getFirstName(),
+                theMedicalRecord.getLastName(),
+                theMedicalRecord.getBirthdate(),
+                medications,
+                allergies);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/medicalRecord/" + key)
-                        .content(Utils.asJsonString(medicalRecord))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .put("/medicalRecord/" + key.get())
+                        .characterEncoding("utf-8")
+                        .content(jsonToUpdate)
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("pharmacol:5000mg")));
+                .andExpect(content().json(Utils.asJsonString(medicalRecordUpdated)));
     }
 
 
     @Test
+    @DisplayName("Delete a medical record by id")
     public void deleteMedicalRecord() throws Exception {
 
         AtomicReference<String> key = new AtomicReference<>("");

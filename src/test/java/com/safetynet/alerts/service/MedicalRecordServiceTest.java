@@ -1,148 +1,161 @@
 package com.safetynet.alerts.service;
 
+import com.google.common.collect.Iterators;
+import com.safetynet.alerts.model.DataFromJsonFile;
+import com.safetynet.alerts.model.MedicalRecordModel;
+import com.safetynet.alerts.model.PersonModel;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MedicalRecordServiceTest {
-    /*
+
     @Autowired
     private MedicalRecordService medicalRecordService;
 
     @SpyBean
     DataFromJsonFile data;
 
+    private PersonModel person;
 
     @BeforeEach
     public void setUp() {
-
         data.getMedicalRecords().clear();
 
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId("1");
-        medicalRecord.setFirstName("John");
-        medicalRecord.setLastName("Rick");
-        medicalRecord.setBirthdate("12/17/1985");
         ArrayList<String> medications = new ArrayList<>();
         medications.add("aznol:350mg");
         medications.add("hydrapermazol:100mg");
-        medicalRecord.setMedications(medications);
-        medicalRecord.setAllergies(new ArrayList<>());
 
-        data.getMedicalRecords().put("1", medicalRecord);
+        MedicalRecordModel medicalRecord = new MedicalRecordModel("1", "John", "Rick", "12/17/1985", medications, new ArrayList<>());
+
+        data.getMedicalRecords().put(medicalRecord.getId(), medicalRecord);
+
+        person = new PersonModel("John", "Rick", "29 15th St", "Chicago", "365781", "john.rick@gmail.com", "07894235694");
     }
 
     @Test
+    @DisplayName("Show all medical records")
     public void should_find_all_medicalRecords() {
-        Iterable<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecords();
+        Iterable<MedicalRecordModel> medicalRecords = medicalRecordService.getMedicalRecords();
         long count = Iterators.size(medicalRecords.iterator());
         assertEquals(1, count);
     }
 
     @Test
+    @DisplayName("Show medical record by id")
     public void should_find_medicalRecord_by_id() {
-        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord("1");
-        assertNotNull(medicalRecord);
-        assertEquals("John", medicalRecord.getFirstName());
+        MedicalRecordModel medicalRecordModel = data.getMedicalRecords().entrySet()
+                .stream()
+                .findFirst()
+                .get().getValue();
+
+        MedicalRecordModel medicalRecordToFind = medicalRecordService.getMedicalRecord(medicalRecordModel.getId());
+        assertNotNull(medicalRecordToFind);
+        assertEquals(medicalRecordModel, medicalRecordToFind);
     }
 
     @Test
-    public void should_find_medicalRecord_by_person(){
-        Person person = new Person();
-        person.setFirstName("John");
-        person.setLastName("Rick");
-
-        Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
-
-        assertEquals(medicalRecordService.getMedicalRecord("1"),medicalRecord.get());
-    }
-
-    @Test
-    public void should_be_empty_when_unfounded_medicalRecord_by_person_with_FirstName(){
-        Person person = new Person();
-        person.setFirstName("Johno");
-        person.setLastName("Rick");
-
-        Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
-
-        assertTrue(medicalRecord.isEmpty());
-    }
-
-    @Test
-    public void should_be_empty_when_unfounded_medicalRecord_by_person_with_LastName(){
-        Person person = new Person();
-        person.setFirstName("John");
-        person.setLastName("Ricka");
-
-        Optional<MedicalRecord> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
-
-        assertTrue(medicalRecord.isEmpty());
-    }
-
-    @Test
-    public void should_save_medicalRecord() {
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId("1");
-        medicalRecord.setFirstName("John");
-        medicalRecord.setLastName("Rick");
-        medicalRecord.setBirthdate("12/17/2021");
+    @DisplayName("Show medical record by person")
+    public void showMedicalRecordByPerson() {
         ArrayList<String> medications = new ArrayList<>();
         medications.add("aznol:350mg");
         medications.add("hydrapermazol:100mg");
-        medicalRecord.setMedications(medications);
-        medicalRecord.setAllergies(new ArrayList<>());
+        MedicalRecordModel theMedicalRecord = new MedicalRecordModel("1", "John", "Rick", "12/17/1985", medications, new ArrayList<>());
 
-        MedicalRecord medicalRecordSaved = medicalRecordService.saveMedicalRecord(medicalRecord);
+        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
+
+        assertEquals(theMedicalRecord.getId(), medicalRecord.get().getId());
+    }
+
+    @Test
+    @DisplayName("Return empty when medical record has a unknown first name")
+    public void returnEmptyWhenMedicalRecordHasAUnknownFirstName() {
+        person.setFirstName("Johna");
+        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
+        assertTrue(medicalRecord.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Return empty when medical record has a unknown last name")
+    public void returnEmptyWhenMedicalRecordHasAUnknownLastName() {
+        person.setLastName("Ricka");
+        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(person);
+        assertTrue(medicalRecord.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Create a new medical record")
+    public void createANewMedicalRecord() {
+        ArrayList<String> medications = new ArrayList<>();
+        medications.add("aznol:350mg");
+        medications.add("hydrapermazol:100mg");
+
+        MedicalRecordModel medicalRecord = new MedicalRecordModel("John","Rick","12/17/2021",medications,new ArrayList<>());
+
+        MedicalRecordModel medicalRecordSaved = medicalRecordService.saveMedicalRecord(medicalRecord);
 
         assertEquals(medicalRecord, medicalRecordSaved);
     }
 
-    @Test
-    public void should_update_medicalRecord(){
-        MedicalRecord medicalRecord = data.getMedicalRecords().get("1");
-        medicalRecord.setBirthdate("xxx");
 
-        MedicalRecord medicalRecordUpdated = medicalRecordService.updateMedicalRecord(medicalRecord);
+    @Test
+    @DisplayName("Update a medical record by id")
+    public void updateAMedicalRecordById() {
+        MedicalRecordModel medicalRecord = data.getMedicalRecords().entrySet()
+                .stream()
+                .findFirst()
+                .get().getValue();
+
+        medicalRecord.setBirthdate("12/12/1956");
+
+        MedicalRecordModel medicalRecordUpdated = medicalRecordService.updateMedicalRecord(medicalRecord);
 
         assertEquals(medicalRecord, medicalRecordUpdated);
     }
 
+
     @Test
-    public void should_delete_medicalRecord_by_id() {
+    @DisplayName("Delete a medical record by id")
+    public void deleteAMedicalRecordById() {
         medicalRecordService.deleteMedicalRecord("1");
         assertNull(medicalRecordService.getMedicalRecord("1"));
     }
-
+    
     @Test
-    public void should_return_age(){
+    @DisplayName("Show the age of a person")
+    public void showTheAgeOfAPerson() {
         int age = medicalRecordService.getAge(data.getMedicalRecords().get("1"));
-        assertEquals(36,age);
+        assertEquals(36, age);
     }
 
     @Test
-    public void should_beNotMinor_When_ageIsMoreThan18(){
-        MedicalRecord medicalRecord = data.getMedicalRecords().get("1");
+    @DisplayName("Person is not minor when person has more than 18 old")
+    public void personIsNotMinorWhenPersonHasMoreThan18Old() {
+        MedicalRecordModel medicalRecord = data.getMedicalRecords().get("1");
         assertFalse(medicalRecordService.isMinor(medicalRecord));
     }
 
     @Test
-    public void should_beMinor_When_ageIsLessThan18(){
-
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setId("2");
-        medicalRecord.setFirstName("John");
-        medicalRecord.setLastName("Ricka");
-        medicalRecord.setBirthdate("12/17/2020");
+    @DisplayName("Person is minor when person has less than 18 old")
+    public void personIsMinorWhenPersonHasLessThan18Old () {
         ArrayList<String> medications = new ArrayList<>();
         medications.add("aznol:350mg");
         medications.add("hydrapermazol:100mg");
-        medicalRecord.setMedications(medications);
-        medicalRecord.setAllergies(new ArrayList<>());
+        MedicalRecordModel medicalRecord = new MedicalRecordModel("John","Ricka","12/17/2020",medications,new ArrayList<>());
 
-        data.getMedicalRecords().put("2", medicalRecord);
+        data.getMedicalRecords().put(medicalRecord.getId(), medicalRecord);
 
-        MedicalRecord theMinor = data.getMedicalRecords().get("2");
+        MedicalRecordModel theMinor = data.getMedicalRecords().get(medicalRecord.getId());
         assertTrue(medicalRecordService.isMinor(theMinor));
     }
 
-    */
 }
