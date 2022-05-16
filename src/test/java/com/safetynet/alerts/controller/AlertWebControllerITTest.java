@@ -60,12 +60,13 @@ public class AlertWebControllerITTest {
     }
 
     @Test
-    public void getInformationPerson() throws Exception {
+    @DisplayName("Get person's information by first name and last name")
+    public void getInformationPersonByFirstNameAndLastName() throws Exception {
         mockMvc.perform(get("/personInfo")
                         .param("firstName", "John")
                         .param("lastName", "Boyd"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("[\"first name:John,last name:Boyd,address:1509 Culver St,email:jaboyd@email.com,age:38,medications:[aznol:350mg, hydrapermazol:100mg],allergies:[nillacilan]\"]"));
+                .andExpect(content().string(containsString("\"firstName\":\"Jacob\",\"lastName\":\"Boyd\",\"age\":2,\"address\":\"1509 Culver St\"")));
     }
 
     @Test

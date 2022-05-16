@@ -3,6 +3,7 @@ package com.safetynet.alerts.service;
 import com.safetynet.alerts.constant.App;
 import com.safetynet.alerts.dto.FireDTO;
 import com.safetynet.alerts.dto.HouseholdDTO;
+import com.safetynet.alerts.dto.PersonInfoDTO;
 import com.safetynet.alerts.model.FireStationModel;
 import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.model.PersonModel;
@@ -71,34 +72,34 @@ public class AlertWebService {
         return null;
     }
 
-    public List<String> getInformationPerson(String firstName, String lastName) {
+    public List<PersonInfoDTO> getInformationPerson(String firstName, String lastName) {
 
-        List<String> listOfPersons = new ArrayList<>();
+        List<PersonInfoDTO> listOfPersonInfos = new ArrayList<>();
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson ->
-                        firstName.equalsIgnoreCase(thePerson.getFirstName())
-                                && lastName.equalsIgnoreCase(thePerson.getLastName()))
+                                lastName.equalsIgnoreCase(thePerson.getLastName()))
                 .forEach(thePerson -> {
 
-                    StringBuilder personDataBuild = new StringBuilder();
                     Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                    personDataBuild.append("first name:").append(thePerson.getFirstName()).append(App.SEPARATOR);
-                    personDataBuild.append("last name:").append(thePerson.getLastName()).append(App.SEPARATOR);
-                    personDataBuild.append("address:").append(thePerson.getAddress()).append(App.SEPARATOR);
-                    personDataBuild.append("email:").append(thePerson.getEmail()).append(App.SEPARATOR);
-
                     if (medicalRecord.isPresent()) {
-                        personDataBuild.append("age:").append(medicalRecordService.getAge(medicalRecord.get())).append(App.SEPARATOR);
-                        personDataBuild.append("medications:").append(medicalRecord.get().getMedications()).append(App.SEPARATOR);
-                        personDataBuild.append("allergies:").append(medicalRecord.get().getAllergies());
+                        String theFirstName = thePerson.getFirstName();
+                        String address = thePerson.getAddress();
+                        String city = thePerson.getCity();
+                        String zip = thePerson.getZip();
+                        String email = thePerson.getEmail();
+                        int age = medicalRecordService.getAge(medicalRecord.get());
+                        List<String> medications = medicalRecord.get().getMedications();
+                        List<String> allergies = medicalRecord.get().getAllergies();
+
+                        listOfPersonInfos.add(new PersonInfoDTO(theFirstName,lastName,age,address,city,zip,email,medications,allergies));
+
                     }
 
-                    listOfPersons.add(personDataBuild.toString());
                 });
 
-        return listOfPersons;
+        return listOfPersonInfos;
     }
 
     public Map<String, Object> getListOfChildrenByAddress(String address) {

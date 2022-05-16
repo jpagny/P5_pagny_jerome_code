@@ -1,6 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.dto.FireDTO;
+import com.safetynet.alerts.dto.PersonInfoDTO;
 import com.safetynet.alerts.service.AlertWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class AlertWebController {
     }
 
     @GetMapping("/personInfo")
-    public List<String> getInformationPerson(@RequestParam String firstName, @RequestParam String lastName) {
+    public List<PersonInfoDTO> getInformationPerson(@RequestParam String firstName, @RequestParam String lastName) {
         return alertWebService.getInformationPerson(firstName, lastName);
     }
 
