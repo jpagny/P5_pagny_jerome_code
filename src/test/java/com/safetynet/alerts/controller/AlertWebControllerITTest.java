@@ -70,11 +70,12 @@ public class AlertWebControllerITTest {
     }
 
     @Test
+    @DisplayName("Get list of children with family member by address")
     public void getListOfChildrenByAddress() throws Exception {
         mockMvc.perform(get("/childAlert")
                         .param("address", "1509 Culver St"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Enfant id")));
+                .andExpect(content().string(containsString("{\"firstName\":\"Jacob\",\"lastName\":\"Boyd\",\"age\":2,\"listFamilyMember\":[{")));
     }
 
     @Test

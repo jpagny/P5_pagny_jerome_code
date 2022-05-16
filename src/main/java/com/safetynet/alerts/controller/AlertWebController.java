@@ -1,5 +1,6 @@
 package com.safetynet.alerts.controller;
 
+import com.safetynet.alerts.dto.ChildAlertDTO;
 import com.safetynet.alerts.dto.FireDTO;
 import com.safetynet.alerts.dto.PersonInfoDTO;
 import com.safetynet.alerts.service.AlertWebService;
@@ -34,7 +35,7 @@ public class AlertWebController {
     }
 
     @GetMapping("/childAlert")
-    public Map<String, Object> getListOfChildrenByAddress(@RequestParam String address) {
+    public List<ChildAlertDTO> getListOfChildrenByAddress(@RequestParam String address) {
         return alertWebService.getListOfChildrenByAddress(address);
     }
 

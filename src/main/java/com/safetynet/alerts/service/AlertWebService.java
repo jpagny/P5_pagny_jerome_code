@@ -1,6 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.constant.App;
+import com.safetynet.alerts.dto.ChildAlertDTO;
 import com.safetynet.alerts.dto.FireDTO;
 import com.safetynet.alerts.dto.HouseholdDTO;
 import com.safetynet.alerts.dto.PersonInfoDTO;
@@ -102,9 +103,9 @@ public class AlertWebService {
         return listOfPersonInfos;
     }
 
-    public Map<String, Object> getListOfChildrenByAddress(String address) {
+    public List<ChildAlertDTO> getListOfChildrenByAddress(String address) {
 
-        Map<String, Object> listOfChildren = new LinkedHashMap<>();
+        List<ChildAlertDTO> listOfChildren = new ArrayList();
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson ->
@@ -116,15 +117,11 @@ public class AlertWebService {
 
                         if (medicalRecordService.isMinor(medicalRecord.get())) {
                             Iterable<PersonModel> familyMember = personService.getFamilyMemberByChild(thePerson);
-                            StringBuilder childDataBuild = new StringBuilder();
+                            String firstName = thePerson.getFirstName();
+                            String lastName = thePerson.getLastName();
+                            int age = medicalRecordService.getAge(medicalRecord.get());
 
-                            childDataBuild.append(thePerson.getFirstName()).append(App.SEPARATOR);
-                            childDataBuild.append(thePerson.getLastName()).append(App.SEPARATOR);
-                            childDataBuild.append(medicalRecordService.getAge(medicalRecord.get()));
-
-                            listOfChildren.put("Enfant id " + thePerson.getId() + " :", childDataBuild);
-                            listOfChildren.put("Autres membre de l'enfant " + thePerson.getFirstName()
-                                    + "(" + thePerson.getId() + ") :", familyMember);
+                            listOfChildren.add(new ChildAlertDTO(firstName,lastName,age,familyMember));
                         }
                     }
                 });
