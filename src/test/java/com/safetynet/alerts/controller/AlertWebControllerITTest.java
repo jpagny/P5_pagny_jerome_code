@@ -79,8 +79,8 @@ public class AlertWebControllerITTest {
 
         AtomicReference<String> key = new AtomicReference<>("");
 
-        data.getFireStations().forEach((k,v) -> {
-            if ( v.getAddress().contains("1509 Culver St") ){
+        data.getFireStations().forEach((k, v) -> {
+            if (v.getAddress().contains("1509 Culver St")) {
                 key.set(k);
             }
         });
