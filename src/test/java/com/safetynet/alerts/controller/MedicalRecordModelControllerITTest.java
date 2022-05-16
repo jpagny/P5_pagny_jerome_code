@@ -52,11 +52,11 @@ public class MedicalRecordModelControllerITTest {
     @DisplayName("Show information of all medical record")
     public void showInformationOfAllMedicalRecord() throws Exception {
 
-        String allPersonsJson = Utils.asJsonString(data.getMedicalRecords().values());
+        String allMedicalRecordJson = Utils.asJsonString(data.getMedicalRecords().values());
 
         mockMvc.perform(get("/medicalRecords"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(allPersonsJson));
+                .andExpect(content().json(allMedicalRecordJson));
     }
 
     @Test
@@ -92,20 +92,21 @@ public class MedicalRecordModelControllerITTest {
                 medications,
                 new ArrayList<>());
 
-        String newPersonJson = Utils.asJsonString(medicalRecordModel);
+        String newMedicalRecordJson = Utils.asJsonString(medicalRecordModel);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/medicalRecord")
-                        .content(newPersonJson)
+                        .content(newMedicalRecordJson)
+                        .characterEncoding("utf-8")
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(newPersonJson));
+                .andExpect(content().json(newMedicalRecordJson));
     }
 
     @Test
-    @DisplayName("Updated an information from a medical record by id")
+    @DisplayName("Update an information from a medical record by id")
     public void updateMedicalRecord() throws Exception {
 
         AtomicReference<String> key = new AtomicReference<>("");

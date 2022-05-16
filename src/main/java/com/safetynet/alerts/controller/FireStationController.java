@@ -1,6 +1,6 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.model.FireStationModel;
 import com.safetynet.alerts.service.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,39 +12,33 @@ public class FireStationController {
     private FireStationService fireStationService;
 
     @GetMapping("/firestations")
-    public Iterable<FireStation> getFireStations() {
+    public Iterable<FireStationModel> getFireStations() {
         return fireStationService.getFireStations();
     }
 
     @GetMapping("/firestation/{id}")
-    public FireStation getFireStation(@PathVariable final String id) {
+    public FireStationModel getFireStation(@PathVariable final String id) {
         return fireStationService.getFireStation(id);
     }
 
     @PostMapping("/firestation")
-    public FireStation createPerson(@RequestBody FireStation fireStationToSave) {
-        return fireStationService.saveFireStation(fireStationToSave);
+    public FireStationModel createPerson(@RequestBody FireStationModel fireStationModelToSave) {
+        return fireStationService.saveFireStation(fireStationModelToSave);
     }
 
     @PutMapping("/firestation/{id}")
-    public FireStation updateFireStation(@PathVariable("id") final String id, @RequestBody FireStation fireStationToUpdate) {
-        FireStation fireStation = fireStationService.getFireStation(id);
+    public FireStationModel updateFireStation(@PathVariable("id") final String id, @RequestBody FireStationModel fireStationModelToUpdate) {
+        FireStationModel fireStationModel = fireStationService.getFireStation(id);
 
-        if (fireStation != null) {
+        if (fireStationModel != null) {
 
-            String address = fireStationToUpdate.getAddress();
-            String station = fireStationToUpdate.getStation();
+            String address = fireStationModelToUpdate.getAddress() == null ? fireStationModel.getAddress() : fireStationModelToUpdate.getAddress();
+            String station = fireStationModelToUpdate.getStation() == null ? fireStationModel.getStation() : fireStationModelToUpdate.getStation();
 
-            if (address != null) {
-                fireStation.setAddress(address);
-            }
+            FireStationModel fireStationModelUpdated = new FireStationModel(id, address, station);
 
-            if (station != null) {
-                fireStation.setStation(station);
-            }
-
-            fireStationService.updateFireStation(fireStation);
-            return fireStation;
+            fireStationService.updateFireStation(fireStationModelUpdated);
+            return fireStationModelUpdated;
 
         } else {
             return null;

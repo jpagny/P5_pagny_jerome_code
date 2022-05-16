@@ -11,6 +11,6 @@ import java.util.Map;
 @Setter
 public class DataFromJsonFile {
     private Map<String, PersonModel> persons;
-    private Map<String, FireStation> fireStations;
+    private Map<String, FireStationModel> fireStations;
     private Map<String, MedicalRecordModel> medicalRecords;
 }

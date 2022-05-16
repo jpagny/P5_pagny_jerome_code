@@ -1,7 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.DataFromJsonFile;
-import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.model.FireStationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,36 +15,34 @@ public class FireStationService {
     @Autowired
     private DataFromJsonFile data;
 
-    public FireStation getFireStation(final String id) {
+    public FireStationModel getFireStation(final String id) {
         return data.getFireStations().get(id);
     }
 
-    public Iterable<FireStation> getFireStations() {
+    public Iterable<FireStationModel> getFireStations() {
         return data.getFireStations().values();
     }
 
-    public Optional<FireStation> getFireStationByAddress(final String address) {
+    public Optional<FireStationModel> getFireStationByAddress(final String address) {
         return data.getFireStations().values().stream()
                 .filter(theFireStation -> address.equalsIgnoreCase(theFireStation.getAddress()))
                 .findFirst();
     }
 
-    public Iterable<FireStation> getFireStationsByStationNumber(final int stationNumber) {
+    public Iterable<FireStationModel> getFireStationsByStationNumber(final int stationNumber) {
         return data.getFireStations().values().stream()
                 .filter(theFireStation -> String.valueOf(stationNumber).equalsIgnoreCase(theFireStation.getStation()))
                 .collect(Collectors.toList());
     }
 
-    public FireStation saveFireStation(FireStation fireStation) {
-        String uniqueID = UUID.randomUUID().toString();
-        fireStation.setId(uniqueID);
-        data.getFireStations().put(uniqueID, fireStation);
-        return data.getFireStations().get(uniqueID);
+    public FireStationModel saveFireStation(FireStationModel fireStationModel) {
+        data.getFireStations().put(fireStationModel.getId(), fireStationModel);
+        return data.getFireStations().get(fireStationModel.getId());
     }
 
-    public FireStation updateFireStation(FireStation fireStation){
-        data.getFireStations().put(fireStation.getId(),fireStation);
-        return fireStation;
+    public FireStationModel updateFireStation(FireStationModel fireStationModel){
+        data.getFireStations().put(fireStationModel.getId(), fireStationModel);
+        return fireStationModel;
     }
 
     public void deleteFireStation(final String id) {

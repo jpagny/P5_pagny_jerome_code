@@ -106,7 +106,6 @@ public class MedicalRecordServiceTest {
         assertEquals(medicalRecord, medicalRecordSaved);
     }
 
-
     @Test
     @DisplayName("Update a medical record by id")
     public void updateAMedicalRecordById() {
@@ -129,7 +128,7 @@ public class MedicalRecordServiceTest {
         medicalRecordService.deleteMedicalRecord("1");
         assertNull(medicalRecordService.getMedicalRecord("1"));
     }
-    
+
     @Test
     @DisplayName("Show the age of a person")
     public void showTheAgeOfAPerson() {

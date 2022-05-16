@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataFromJsonFile;
-import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.model.FireStationModel;
 import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.model.PersonModel;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class LoadDataFromDataJson {
@@ -35,7 +34,7 @@ public class LoadDataFromDataJson {
         fileJsonData = theFileJsonData;
 
         Map<String, PersonModel> personData = buildPersonsData();
-        Map<String, FireStation> fireStationMap = buildFireStationData();
+        Map<String, FireStationModel> fireStationMap = buildFireStationData();
         Map<String, MedicalRecordModel> medicalRecordMap = buildMedicalRecordData();
 
         LOG.debug("Loaded from a Json file : \r\n"
@@ -72,18 +71,20 @@ public class LoadDataFromDataJson {
         return personMap;
     }
 
-    private static Map<String, FireStation> buildFireStationData() throws IOException {
+    private static Map<String, FireStationModel> buildFireStationData() throws IOException {
 
-        Map<String, FireStation> fireStationMap = new HashMap<>();
+        Map<String, FireStationModel> fireStationMap = new HashMap<>();
         JsonNode nodes = loadNodes();
         String fireStationNodes = nodes.get("firestations").toString();
-        List<FireStation> fireStationList = mapper.readValue(fireStationNodes, new TypeReference<>() {
+        List<FireStationModel> fireStationModelList = mapper.readValue(fireStationNodes, new TypeReference<>() {
         });
 
-        fireStationList.forEach(theFireStation -> {
-            String uniqueID = UUID.randomUUID().toString();
-            theFireStation.setId(uniqueID);
-            fireStationMap.put(uniqueID, theFireStation);
+        fireStationModelList.forEach(theFireStation -> {
+            FireStationModel fireStation = new FireStationModel(
+                    theFireStation.getAddress(),
+                    theFireStation.getStation()
+            );
+            fireStationMap.put(fireStation.getId(),fireStation);
         });
 
         return fireStationMap;
@@ -104,7 +105,7 @@ public class LoadDataFromDataJson {
                     theMedicalRecord.getMedications(),
                     theMedicalRecord.getAllergies()
             );
-            medicalRecordMap.put(medicalRecord.getId(), theMedicalRecord);
+            medicalRecordMap.put(medicalRecord.getId(), medicalRecord);
         });
 
         return medicalRecordMap;
