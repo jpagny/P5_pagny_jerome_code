@@ -1,20 +1,10 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.constant.App;
-import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class AlertWebService {
-
+/*
     @Autowired
     private PersonService personService;
 
@@ -220,5 +210,5 @@ public class AlertWebService {
         return listOfFireStation;
     }
 
-
+*/
 }

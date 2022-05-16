@@ -3,7 +3,6 @@ package com.safetynet.alerts.service;
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.model.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

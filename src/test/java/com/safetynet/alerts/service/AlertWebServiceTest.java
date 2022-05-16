@@ -1,28 +1,18 @@
 package com.safetynet.alerts.service;
 
-import com.google.common.collect.Iterators;
-import com.safetynet.alerts.model.Person;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class AlertWebServiceTest {
+    /*
 
     @Autowired
     private AlertWebService alertWebService;
 
     @MockBean
     private PersonService personService;
-
 
     @BeforeEach
     public void setUp() {
@@ -52,6 +42,6 @@ public class AlertWebServiceTest {
         List<String> listEmail = alertWebService.getListEmailByCity("Culver");
         assertEquals(2, Iterators.size(listEmail.iterator()));
     }
-
+    */
 
 }

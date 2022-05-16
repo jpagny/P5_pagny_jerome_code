@@ -3,7 +3,7 @@ package com.safetynet.alerts.service;
 import com.safetynet.alerts.constant.App;
 import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.PersonModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +27,11 @@ public class MedicalRecordService {
         return data.getMedicalRecords().values();
     }
 
-    public Optional<MedicalRecord> getMedicalRecordByPerson(Person person) {
+    public Optional<MedicalRecord> getMedicalRecordByPerson(PersonModel personModel) {
         return data.getMedicalRecords().values().stream()
                 .filter(theMedicalRecord ->
-                        person.getFirstName().equalsIgnoreCase(theMedicalRecord.getFirstName())
-                                && person.getLastName().equalsIgnoreCase(theMedicalRecord.getLastName()))
+                        personModel.getFirstName().equalsIgnoreCase(theMedicalRecord.getFirstName())
+                                && personModel.getLastName().equalsIgnoreCase(theMedicalRecord.getLastName()))
                 .findFirst();
     }
 

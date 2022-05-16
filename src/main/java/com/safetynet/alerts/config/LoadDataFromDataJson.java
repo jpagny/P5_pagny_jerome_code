@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataFromJsonFile;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.PersonModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class LoadDataFromDataJson {
 
         fileJsonData = theFileJsonData;
 
-        Map<String, Person> personData = buildPersonsData();
+        Map<String, PersonModel> personData = buildPersonsData();
         Map<String, FireStation> fireStationMap = buildFireStationData();
         Map<String, MedicalRecord> medicalRecordMap = buildMedicalRecordData();
 
@@ -48,19 +48,20 @@ public class LoadDataFromDataJson {
         return new DataFromJsonFile(personData, fireStationMap, medicalRecordMap);
     }
 
-    private static Map<String, Person> buildPersonsData() throws IOException {
+    private static Map<String, PersonModel> buildPersonsData() throws IOException {
 
-        Map<String, Person> personMap = new HashMap<>();
+        Map<String, PersonModel> personMap = new HashMap<>();
 
         JsonNode nodes = loadNodes();
         String personNodes = nodes.get("persons").toString();
-        List<Person> personList = mapper.readValue(personNodes, new TypeReference<>() {
-        });
 
-        personList.forEach(thePerson -> {
-            String uniqueID = UUID.randomUUID().toString();
-            thePerson.setId(uniqueID);
-            personMap.put(uniqueID, thePerson);
+        List<PersonModel> personModelList = mapper.readValue(personNodes, new TypeReference<>() {});
+
+        personModelList.forEach(thePerson -> {
+
+            PersonModel person = new PersonModel(thePerson.getFirstName(),thePerson.getLastName(),thePerson.getAddress(),thePerson.getCity(),thePerson.getZip(),thePerson.getPhone(),thePerson.getEmail());
+
+            personMap.put(person.getId(), person);
         });
 
         return personMap;

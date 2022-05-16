@@ -1,28 +1,16 @@
 package com.safetynet.alerts.service;
 
-import com.google.common.collect.Iterators;
-import com.safetynet.alerts.model.DataFromJsonFile;
-import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-
-import java.util.ArrayList;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MedicalRecordServiceTest {
-
+    /*
     @Autowired
     private MedicalRecordService medicalRecordService;
 
     @SpyBean
     DataFromJsonFile data;
+
 
     @BeforeEach
     public void setUp() {
@@ -156,5 +144,5 @@ public class MedicalRecordServiceTest {
         assertTrue(medicalRecordService.isMinor(theMinor));
     }
 
-
+    */
 }

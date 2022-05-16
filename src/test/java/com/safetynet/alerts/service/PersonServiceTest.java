@@ -2,12 +2,16 @@ package com.safetynet.alerts.service;
 
 import com.google.common.collect.Iterators;
 import com.safetynet.alerts.model.DataFromJsonFile;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.PersonModel;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,106 +28,105 @@ public class PersonServiceTest {
     public void setUp() {
         data.getPersons().clear();
 
-        Person person = new Person();
-        person.setId("1");
-        person.setFirstName("John");
-        person.setLastName("Rick");
-        person.setAddress("29 15th St");
-        person.setCity("Chicago");
-        person.setZip("365781");
-        person.setEmail("john.rick@gmail.com");
-        person.setPhone("07894235694");
-
-        data.getPersons().put("1", person);
+        PersonModel person = new PersonModel("John", "Rick", "29 15th St", "Chicago", "365781", "john.rick@gmail.com", "07894235694");
+        data.getPersons().put(person.getId(), person);
     }
 
     @Test
-    public void should_find_all_persons() {
-        Iterable<Person> persons = personService.getPersons();
+    @DisplayName("show all persons")
+    public void showAllPersons() {
+        Iterable<PersonModel> persons = personService.getPersons();
         long count = Iterators.size(persons.iterator());
         assertEquals(1, count);
     }
 
     @Test
-    public void should_find_person_by_id() {
-        Person person = personService.getPerson("1");
+    @DisplayName("Show a person by id")
+    public void showAPersonById() {
+
+        PersonModel person = data.getPersons().entrySet()
+                .stream()
+                .findFirst()
+                .get().getValue();
+
+        PersonModel personToFind = personService.getPerson(person.getId());
         assertNotNull(person);
-        assertEquals("John", person.getFirstName());
+        assertEquals(personToFind, person);
     }
 
     @Test
-    public void should_save_person() {
-        Person person = new Person();
-        person.setId("2");
-        person.setFirstName("Joahn");
-        person.setLastName("Rick");
-        person.setAddress("29 15th St");
-        person.setCity("Chicago");
-        person.setZip("365781");
-        person.setEmail("john.rick@gmail.com");
-        person.setPhone("07894235694");
-
-        Person personSaved = personService.savePerson(person);
-
+    @DisplayName("Create a new person")
+    public void createANewPerson() {
+        PersonModel person = new PersonModel("Johna", "Ricky", "29 15th St", "Chicago", "365781", "john.rick@gmail.com", "07894235694");
+        PersonModel personSaved = personService.savePerson(person);
         assertEquals(person, personSaved);
     }
 
     @Test
-    public void should_update_person(){
-        Person person = data.getPersons().get("1");
+    @DisplayName("Update a person")
+    public void updateAPerson() {
+
+        PersonModel person = data.getPersons().entrySet()
+                .stream()
+                .findFirst()
+                .get().getValue();
+
+        PersonModel personToUpdate = data.getPersons().get(person.getId());
         person.setEmail("xxx@gmail.com");
-
-        Person personUpdated = personService.updatePerson(person);
-
-        assertEquals(person, personUpdated);
+        PersonModel personUpdated = personService.updatePerson(person);
+        assertEquals(personToUpdate, personUpdated);
     }
 
     @Test
-    public void should_delete_person_by_id() {
+    @DisplayName("Delete a person by id")
+    public void deleteAPersonById() {
         personService.deletePerson("1");
         assertNull(personService.getPerson("1"));
     }
 
     @Test
-    void should_returnListFamilyMemberByChild(){
+    @DisplayName("Show all family member by a child")
+    void showAllFamilyMemberByAChild() {
 
-        Person child = new Person();
-        child.setId("2");
-        child.setFirstName("Rocky");
-        child.setLastName("Rick");
-        child.setAddress("29 15th St");
-        child.setCity("Chicago");
-        child.setZip("365781");
-        child.setEmail("john.rick@gmail.com");
-        child.setPhone("07894235694");
+        AtomicReference<String> key = new AtomicReference<>("");
 
-        Person child2 = new Person();
-        child2.setId("3");
-        child2.setFirstName("Rocky");
-        child2.setLastName("Spong");
-        child2.setAddress("29 15th St");
-        child2.setCity("Chicago");
-        child2.setZip("365781");
-        child2.setEmail("john.rick@gmail.com");
-        child2.setPhone("07894235694");
+        data.getPersons().forEach((k, v) -> {
+            if (v.getFirstName().equals("John")) {
+                key.set(k);
+            }
+        });
 
-        data.getPersons().put("2",child);
-        data.getPersons().put("3",child2);
+        PersonModel theFather = data.getPersons().get(key.get());
+        PersonModel theChild = new PersonModel("Rocky", "Rick", "29 15th St", "Chicago", "365781", "john.ricka@gmail.com", "07894235694");
+        PersonModel otherChild = new PersonModel("Rock", "Spring", "28 15th St", "Chicago", "365781", "johna.ricka@gmail.com", "07894235694");
 
-        Iterable<Person> listFamilyMember = personService.getFamilyMemberByChild(child);
+        data.getPersons().put(theChild.getId(), theChild);
+        data.getPersons().put(otherChild.getId(), otherChild);
+
+        Iterable<PersonModel> listFamilyMember = personService.getFamilyMemberByChild(theChild);
         int countFamilyMember = Iterators.size(listFamilyMember.iterator());
 
         assertEquals(1, countFamilyMember);
-        assertEquals(data.getPersons().get("1"),listFamilyMember.iterator().next());
+        assertEquals(theFather, listFamilyMember.iterator().next());
     }
 
     @Test
-    void should_return_listPersons_byAnAddress(){
-        Iterable<Person> listPersons = personService.getPersonsByAddress("29 15th St");
+    @DisplayName("Show all persons which live in an address")
+    void showAllPersonsWhichLiveInAnAddress() {
+        ArrayList<PersonModel> listAllPersonsWhichLiveInThisAddress = new ArrayList<>();
+
+        data.getPersons().forEach((k, v) -> {
+            if (v.getAddress().equals("29 15th St")) {
+                listAllPersonsWhichLiveInThisAddress.add(v);
+            }
+        });
+
+        Iterable<PersonModel> listPersons = personService.getPersonsByAddress("29 15th St");
         int countPersons = Iterators.size(listPersons.iterator());
 
         assertEquals(1, countPersons);
-        assertEquals(data.getPersons().get("1"),listPersons.iterator().next());
+        assertEquals(listAllPersonsWhichLiveInThisAddress, listPersons);
     }
+
 
 }

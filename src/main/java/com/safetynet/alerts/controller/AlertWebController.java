@@ -11,6 +11,7 @@ import java.util.Map;
 
 @RestController
 public class AlertWebController {
+    /*
 
     @Autowired
     private AlertWebService alertWebService;
@@ -50,5 +51,5 @@ public class AlertWebController {
     public Map<String, Map<String, String>> getListOfPersonsByStationsNumber(@RequestParam int[] stations) {
         return alertWebService.getListOfPersonByStationsNumber(stations);
     }
-
+*/
 }
