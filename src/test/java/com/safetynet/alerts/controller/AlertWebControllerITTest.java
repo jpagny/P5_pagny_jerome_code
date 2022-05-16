@@ -51,7 +51,7 @@ public class AlertWebControllerITTest {
     }
 
     @Test
-    @DisplayName("List persons and number station by an address")
+    @DisplayName("List persons and number fireStation by an address")
     public void getPersonsAndNumberFireStationByAddress() throws Exception {
         mockMvc.perform(get("/fire")
                         .param("address", "1509 Culver St"))
@@ -79,7 +79,7 @@ public class AlertWebControllerITTest {
     }
 
     @Test
-    @DisplayName("Get list of phones number by fire station number")
+    @DisplayName("Get list of phones number by fireStation number")
     public void getListOfPhoneNumberByFireStationNumber() throws Exception {
 
         AtomicReference<String> key = new AtomicReference<>("");
@@ -97,8 +97,8 @@ public class AlertWebControllerITTest {
     }
 
     @Test
-    @DisplayName("Get list of households by fire station number")
-    public void getListOfPersonByStationNumber() throws Exception {
+    @DisplayName("Get list of households by fireStation number")
+    public void getListOfHouseholdsByStationNumber() throws Exception {
         mockMvc.perform(get("/firestation")
                         .param("stationNumber", "3"))
                 .andExpect(status().isOk())
@@ -106,11 +106,12 @@ public class AlertWebControllerITTest {
     }
 
     @Test
-    public void getListOfPersonByStationsNumber() throws Exception {
+    @DisplayName("Get list of households by list of fireStations number")
+    public void getListOfHouseholdsByListOfFireStationsNumber() throws Exception {
         mockMvc.perform(get("/flood/stations")
                         .param("stations", "3,2"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Person id")));
+                .andExpect(content().string(containsString("{\"address\":\"1509 Culver St\",\"stationNumber\":\"3\"")));
     }
 
 }

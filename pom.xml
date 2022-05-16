@@ -76,6 +76,7 @@
                         <exclude>com/safetynet/alerts/config/*</exclude>
                         <exclude>com/safetynet/alerts/constant/*</exclude>
                         <exclude>com/safetynet/alerts/utility/*</exclude>
+                        <exclude>com/safetynet/alerts/model/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

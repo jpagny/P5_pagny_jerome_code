@@ -1,6 +1,5 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.constant.App;
 import com.safetynet.alerts.dto.*;
 import com.safetynet.alerts.model.FireStationModel;
 import com.safetynet.alerts.model.MedicalRecordModel;
@@ -8,7 +7,10 @@ import com.safetynet.alerts.model.PersonModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.StreamSupport;
 
@@ -182,37 +184,39 @@ public class AlertWebService {
         return householdFireStationDTO;
     }
 
-    public Map<String, Map<String, String>> getListOfPersonByStationsNumber(int[] stationNumber) {
-        Map<String, Map<String, String>> listOfFireStation = new LinkedHashMap<>();
+    public List<HouseholdFloodDTO> getListOfPersonByStationsNumber(int[] stationNumbers) {
 
-        Arrays.stream(stationNumber).forEach(number -> StreamSupport.stream(fireStationService.getFireStationsByStationNumber(number).spliterator(), false)
-                .forEach(theStation -> {
+        List<HouseholdFloodDTO> listHouseholdFloodDto = new ArrayList<>();
 
-                    Map<String, String> listOfPersons = new HashMap<>();
+        Arrays.stream(stationNumbers)
+                .forEach(number -> StreamSupport.stream(fireStationService.getFireStationsByStationNumber(number).spliterator(), false)
+                        .forEach(theStation -> {
 
-                    StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false).forEach(thePerson -> {
+                            List<PersonFloodDTO> listOfPersonFloodDTO = new ArrayList<>();
 
-                        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+                            StreamSupport.stream(personService.getPersonsByAddress(theStation.getAddress()).spliterator(), false)
+                                    .forEach(thePerson -> {
 
-                        if (medicalRecord.isPresent()) {
+                                        Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
 
-                            String personDataBuilder = thePerson.getFirstName() + App.SEPARATOR +
-                                    thePerson.getLastName() + App.SEPARATOR +
-                                    thePerson.getPhone() + App.SEPARATOR +
-                                    medicalRecordService.getAge(medicalRecord.get()) +
-                                    App.SEPARATOR +
-                                    medicalRecord.get().getMedications() + App.SEPARATOR +
-                                    medicalRecord.get().getAllergies();
+                                        if (medicalRecord.isPresent()) {
+                                            String lastName = thePerson.getLastName();
+                                            List<String> medications = medicalRecord.get().getMedications();
+                                            List<String> allergies = medicalRecord.get().getAllergies();
+                                            String phone = thePerson.getPhone();
+                                            int age = medicalRecordService.getAge(medicalRecord.get());
 
-                            listOfPersons.put("Person id " + thePerson.getId(), personDataBuilder);
-                        }
+                                            listOfPersonFloodDTO.add(new PersonFloodDTO(lastName, medications, allergies, phone, age));
+                                        }
 
-                    });
+                                    });
 
-                    listOfFireStation.put("station id " + theStation.getStation() + " - " + theStation.getAddress(), listOfPersons);
-                }));
+                            String address = theStation.getAddress();
 
-        return listOfFireStation;
+                            listHouseholdFloodDto.add(new HouseholdFloodDTO(address, String.valueOf(number), listOfPersonFloodDTO));
+                        }));
+
+        return listHouseholdFloodDto;
     }
 
 
