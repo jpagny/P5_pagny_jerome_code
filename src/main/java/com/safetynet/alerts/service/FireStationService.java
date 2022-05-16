@@ -38,6 +38,7 @@ public class FireStationService {
 
     public FireStation saveFireStation(FireStation fireStation) {
         String uniqueID = UUID.randomUUID().toString();
+        fireStation.setId(uniqueID);
         data.getFireStations().put(uniqueID, fireStation);
         return data.getFireStations().get(uniqueID);
     }

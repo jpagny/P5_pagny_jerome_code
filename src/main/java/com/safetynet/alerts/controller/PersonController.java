@@ -32,7 +32,6 @@ public class PersonController {
 
         if (person != null) {
 
-            Person currentPerson = person;
             String address = personToUpdate.getAddress();
             String city = personToUpdate.getCity();
             String zip = personToUpdate.getZip();
@@ -40,23 +39,23 @@ public class PersonController {
             String email = personToUpdate.getEmail();
 
             if (address != null) {
-                currentPerson.setAddress(address);
+                person.setAddress(address);
             }
 
             if (zip != null) {
-                currentPerson.setCity(city);
+                person.setCity(city);
             }
 
             if (phone != null) {
-                currentPerson.setPhone(phone);
+                person.setPhone(phone);
             }
 
             if (email != null) {
-                currentPerson.setEmail(email);
+                person.setEmail(email);
             }
 
-            personService.updatePerson(currentPerson);
-            return currentPerson;
+            personService.updatePerson(person);
+            return person;
 
         } else {
             return null;

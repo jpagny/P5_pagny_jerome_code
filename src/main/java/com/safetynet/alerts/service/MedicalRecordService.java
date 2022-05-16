@@ -20,15 +20,15 @@ public class MedicalRecordService {
     private DataFromJsonFile data;
 
     public MedicalRecord getMedicalRecord(final String id) {
-        return data.getMedicalRecord().get(id);
+        return data.getMedicalRecords().get(id);
     }
 
     public Iterable<MedicalRecord> getMedicalRecords() {
-        return data.getMedicalRecord().values();
+        return data.getMedicalRecords().values();
     }
 
     public Optional<MedicalRecord> getMedicalRecordByPerson(Person person) {
-        return data.getMedicalRecord().values().stream()
+        return data.getMedicalRecords().values().stream()
                 .filter(theMedicalRecord ->
                         person.getFirstName().equalsIgnoreCase(theMedicalRecord.getFirstName())
                                 && person.getLastName().equalsIgnoreCase(theMedicalRecord.getLastName()))
@@ -37,17 +37,18 @@ public class MedicalRecordService {
 
     public MedicalRecord saveMedicalRecord(MedicalRecord medicalRecord) {
         String uniqueID = UUID.randomUUID().toString();
-        data.getMedicalRecord().put(uniqueID, medicalRecord);
-        return data.getMedicalRecord().get(uniqueID);
+        medicalRecord.setId(uniqueID);
+        data.getMedicalRecords().put(uniqueID, medicalRecord);
+        return data.getMedicalRecords().get(uniqueID);
     }
 
     public MedicalRecord updateMedicalRecord(MedicalRecord medicalRecord){
-        data.getMedicalRecord().put(medicalRecord.getId(),medicalRecord);
+        data.getMedicalRecords().put(medicalRecord.getId(),medicalRecord);
         return medicalRecord;
     }
 
     public void deleteMedicalRecord(final String id) {
-        data.getMedicalRecord().remove(id);
+        data.getMedicalRecords().remove(id);
     }
 
     public int getAge(MedicalRecord medicalRecord) {

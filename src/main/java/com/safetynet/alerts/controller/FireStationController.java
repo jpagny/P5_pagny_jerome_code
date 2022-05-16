@@ -32,20 +32,19 @@ public class FireStationController {
 
         if (fireStation != null) {
 
-            FireStation currentFireStation = fireStation;
             String address = fireStationToUpdate.getAddress();
             String station = fireStationToUpdate.getStation();
 
             if (address != null) {
-                currentFireStation.setAddress(address);
+                fireStation.setAddress(address);
             }
 
             if (station != null) {
-                currentFireStation.setStation(station);
+                fireStation.setStation(station);
             }
 
-            fireStationService.updateFireStation(currentFireStation);
-            return currentFireStation;
+            fireStationService.updateFireStation(fireStation);
+            return fireStation;
 
         } else {
             return null;

@@ -1,12 +1,9 @@
-package com.safetynet.alerts.integration.config;
+package com.safetynet.alerts.controller.config;
 
 import com.safetynet.alerts.config.LoadDataFromDataJson;
 import com.safetynet.alerts.model.DataFromJsonFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;

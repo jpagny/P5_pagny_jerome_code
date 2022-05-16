@@ -27,7 +27,7 @@ public class MedicalRecordServiceTest {
     @BeforeEach
     public void setUp() {
 
-        data.getMedicalRecord().clear();
+        data.getMedicalRecords().clear();
 
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setId("1");
@@ -40,7 +40,7 @@ public class MedicalRecordServiceTest {
         medicalRecord.setMedications(medications);
         medicalRecord.setAllergies(new ArrayList<>());
 
-        data.getMedicalRecord().put("1", medicalRecord);
+        data.getMedicalRecords().put("1", medicalRecord);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void should_update_medicalRecord(){
-        MedicalRecord medicalRecord = data.getMedicalRecord().get("1");
+        MedicalRecord medicalRecord = data.getMedicalRecords().get("1");
         medicalRecord.setBirthdate("xxx");
 
         MedicalRecord medicalRecordUpdated = medicalRecordService.updateMedicalRecord(medicalRecord);
@@ -126,13 +126,13 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void should_return_age(){
-        int age = medicalRecordService.getAge(data.getMedicalRecord().get("1"));
+        int age = medicalRecordService.getAge(data.getMedicalRecords().get("1"));
         assertEquals(36,age);
     }
 
     @Test
     public void should_beNotMinor_When_ageIsMoreThan18(){
-        MedicalRecord medicalRecord = data.getMedicalRecord().get("1");
+        MedicalRecord medicalRecord = data.getMedicalRecords().get("1");
         assertFalse(medicalRecordService.isMinor(medicalRecord));
     }
 
@@ -150,9 +150,9 @@ public class MedicalRecordServiceTest {
         medicalRecord.setMedications(medications);
         medicalRecord.setAllergies(new ArrayList<>());
 
-        data.getMedicalRecord().put("2", medicalRecord);
+        data.getMedicalRecords().put("2", medicalRecord);
 
-        MedicalRecord theMinor = data.getMedicalRecord().get("2");
+        MedicalRecord theMinor = data.getMedicalRecords().get("2");
         assertTrue(medicalRecordService.isMinor(theMinor));
     }
 

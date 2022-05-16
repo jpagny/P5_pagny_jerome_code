@@ -38,6 +38,7 @@ public class PersonService {
 
     public Person savePerson(Person person) {
         String uniqueID = UUID.randomUUID().toString();
+        person.setId(uniqueID);
         data.getPersons().put(uniqueID, person);
         return data.getPersons().get(uniqueID);
     }
