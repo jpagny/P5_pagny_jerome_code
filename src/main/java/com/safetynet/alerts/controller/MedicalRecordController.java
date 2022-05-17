@@ -53,7 +53,7 @@ public class MedicalRecordController {
     }
 
     @DeleteMapping("/medicalRecord/{id}")
-    public void deletePerson(@PathVariable("id") final String id) {
+    public void deleteMedicalRecord(@PathVariable("id") final String id) {
         medicalRecordService.deleteMedicalRecord(id);
     }
 

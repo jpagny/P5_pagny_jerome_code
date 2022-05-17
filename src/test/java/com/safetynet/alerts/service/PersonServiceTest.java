@@ -50,8 +50,9 @@ public class PersonServiceTest {
                 .get().getValue();
 
         PersonModel personToFind = personService.getPerson(person.getId());
+
         assertNotNull(personToFind);
-        assertEquals(personToFind, person);
+        assertEquals(person, personToFind);
     }
 
     @Test
