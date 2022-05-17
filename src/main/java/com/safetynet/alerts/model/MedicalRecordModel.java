@@ -19,9 +19,10 @@ public class MedicalRecordModel {
     private List<String> medications;
     private List<String> allergies;
 
-    public MedicalRecordModel(){}
+    public MedicalRecordModel() {
+    }
 
-    public MedicalRecordModel(String theFirstName, String theLastName, String theBirthdate, List<String> theMedications, List<String> theAllergies){
+    public MedicalRecordModel(String theFirstName, String theLastName, String theBirthdate, List<String> theMedications, List<String> theAllergies) {
         id = UUID.randomUUID().toString();
         firstName = theFirstName;
         lastName = theLastName;

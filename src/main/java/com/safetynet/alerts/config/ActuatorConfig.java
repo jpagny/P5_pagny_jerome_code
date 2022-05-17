@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class ActuatorConfig {
 
     @Bean
-    public HttpTraceRepository httpTraceRepository()
-    {
+    public HttpTraceRepository httpTraceRepository() {
         return new InMemoryHttpTraceRepository();
     }
 

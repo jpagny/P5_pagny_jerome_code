@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
-public class MedicalRecordService {
+public class MedicalRecordService implements IMedicalRecordService {
 
     @Autowired
     private DataFromJsonFile data;
@@ -39,7 +39,7 @@ public class MedicalRecordService {
         return data.getMedicalRecords().get(medicalRecordModel.getId());
     }
 
-    public MedicalRecordModel updateMedicalRecord(MedicalRecordModel medicalRecordModel){
+    public MedicalRecordModel updateMedicalRecord(MedicalRecordModel medicalRecordModel) {
         data.getMedicalRecords().put(medicalRecordModel.getId(), medicalRecordModel);
         return medicalRecordModel;
     }

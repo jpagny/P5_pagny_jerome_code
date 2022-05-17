@@ -54,7 +54,8 @@ public class LoadDataFromDataJson {
         JsonNode nodes = loadNodes();
         String personNodes = nodes.get("persons").toString();
 
-        List<PersonModel> personModelList = mapper.readValue(personNodes, new TypeReference<>() {});
+        List<PersonModel> personModelList = mapper.readValue(personNodes, new TypeReference<>() {
+        });
 
         personModelList.forEach(thePerson -> {
             PersonModel person = new PersonModel(thePerson.getFirstName(),
@@ -84,7 +85,7 @@ public class LoadDataFromDataJson {
                     theFireStation.getAddress(),
                     theFireStation.getStation()
             );
-            fireStationMap.put(fireStation.getId(),fireStation);
+            fireStationMap.put(fireStation.getId(), fireStation);
         });
 
         return fireStationMap;
@@ -95,7 +96,8 @@ public class LoadDataFromDataJson {
         Map<String, MedicalRecordModel> medicalRecordMap = new HashMap<>();
         JsonNode nodes = loadNodes();
         String medicalRecordNodes = nodes.get("medicalrecords").toString();
-        List<MedicalRecordModel> medicalRecordModelList = mapper.readValue(medicalRecordNodes, new TypeReference<>() {});
+        List<MedicalRecordModel> medicalRecordModelList = mapper.readValue(medicalRecordNodes, new TypeReference<>() {
+        });
 
         medicalRecordModelList.forEach(theMedicalRecord -> {
             MedicalRecordModel medicalRecord = new MedicalRecordModel(

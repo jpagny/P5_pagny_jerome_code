@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.StreamSupport;
 
 @Service
-public class AlertWebService {
+public class AlertWebService implements IAlertWebService {
 
     @Autowired
     private PersonService personService;
@@ -103,7 +103,7 @@ public class AlertWebService {
 
     public List<ChildAlertDTO> getListOfChildrenByAddress(String address) {
 
-        List<ChildAlertDTO> listOfChildren = new ArrayList();
+        ArrayList<ChildAlertDTO> listOfChildren = new ArrayList<>();
 
         StreamSupport.stream(personService.getPersons().spliterator(), false)
                 .filter(thePerson ->

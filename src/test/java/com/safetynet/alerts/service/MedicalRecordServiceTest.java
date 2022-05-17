@@ -99,7 +99,7 @@ public class MedicalRecordServiceTest {
         medications.add("aznol:350mg");
         medications.add("hydrapermazol:100mg");
 
-        MedicalRecordModel medicalRecord = new MedicalRecordModel("John","Rick","12/17/2021",medications,new ArrayList<>());
+        MedicalRecordModel medicalRecord = new MedicalRecordModel("John", "Rick", "12/17/2021", medications, new ArrayList<>());
 
         MedicalRecordModel medicalRecordSaved = medicalRecordService.saveMedicalRecord(medicalRecord);
 
@@ -120,7 +120,6 @@ public class MedicalRecordServiceTest {
 
         assertEquals(medicalRecord, medicalRecordUpdated);
     }
-
 
     @Test
     @DisplayName("Delete a medical record by id")
@@ -145,11 +144,11 @@ public class MedicalRecordServiceTest {
 
     @Test
     @DisplayName("Person is minor when person has less than 18 old")
-    public void personIsMinorWhenPersonHasLessThan18Old () {
+    public void personIsMinorWhenPersonHasLessThan18Old() {
         ArrayList<String> medications = new ArrayList<>();
         medications.add("aznol:350mg");
         medications.add("hydrapermazol:100mg");
-        MedicalRecordModel medicalRecord = new MedicalRecordModel("John","Ricka","12/17/2020",medications,new ArrayList<>());
+        MedicalRecordModel medicalRecord = new MedicalRecordModel("John", "Ricka", "12/17/2020", medications, new ArrayList<>());
 
         data.getMedicalRecords().put(medicalRecord.getId(), medicalRecord);
 

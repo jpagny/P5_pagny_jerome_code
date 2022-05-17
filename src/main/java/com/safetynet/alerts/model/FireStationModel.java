@@ -16,9 +16,10 @@ public class FireStationModel {
     private String address;
     private String station;
 
-    public FireStationModel(){};
+    public FireStationModel() {
+    }
 
-    public FireStationModel(String theAddress, String theStation){
+    public FireStationModel(String theAddress, String theStation) {
         id = UUID.randomUUID().toString();
         address = theAddress;
         station = theStation;

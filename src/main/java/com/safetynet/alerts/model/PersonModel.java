@@ -21,7 +21,8 @@ public class PersonModel {
     private String email;
 
 
-    public PersonModel() {}
+    public PersonModel() {
+    }
 
     public PersonModel(final String theFirstName, final String theLastName,
                        final String theAddress, final String theCity,

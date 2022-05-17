@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
 
 @Service
-public class PersonService {
+public class PersonService implements IPersonService {
 
     @Autowired
     private DataFromJsonFile data;
@@ -39,7 +39,7 @@ public class PersonService {
         return data.getPersons().get(personModel.getId());
     }
 
-    public PersonModel updatePerson(PersonModel personModel){
+    public PersonModel updatePerson(PersonModel personModel) {
         data.getPersons().put(personModel.getId(), personModel);
         return personModel;
     }

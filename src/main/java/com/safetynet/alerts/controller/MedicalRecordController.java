@@ -41,7 +41,7 @@ public class MedicalRecordController {
             List<String> medications = medicalRecordModelToUpdate.getMedications() == null ? medicalRecordModel.getMedications() : medicalRecordModelToUpdate.getMedications();
             List<String> allergies = medicalRecordModelToUpdate.getAllergies() == null ? medicalRecordModel.getAllergies() : medicalRecordModelToUpdate.getAllergies();
 
-            MedicalRecordModel medicalRecordModelUpdated = new MedicalRecordModel(id,firstName,lastName,birthdate,medications,allergies);
+            MedicalRecordModel medicalRecordModelUpdated = new MedicalRecordModel(id, firstName, lastName, birthdate, medications, allergies);
 
             medicalRecordService.updateMedicalRecord(medicalRecordModelUpdated);
             return medicalRecordModelUpdated;

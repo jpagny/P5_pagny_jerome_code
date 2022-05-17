@@ -40,7 +40,7 @@ public class PersonController {
             String phone = personModelToUpdate.getPhone() == null ? personModel.getPhone() : personModelToUpdate.getPhone();
             String email = personModelToUpdate.getEmail() == null ? personModel.getEmail() : personModelToUpdate.getEmail();
 
-            PersonModel personModelUpdated = new PersonModel(id,firstName,lastName,address,city,zip,phone,email);
+            PersonModel personModelUpdated = new PersonModel(id, firstName, lastName, address, city, zip, phone, email);
 
             personService.updatePerson(personModelUpdated);
             return personModelUpdated;

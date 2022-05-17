@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class FireStationService {
+public class FireStationService implements IFireStationService {
 
     @Autowired
     private DataFromJsonFile data;
@@ -40,7 +39,7 @@ public class FireStationService {
         return data.getFireStations().get(fireStationModel.getId());
     }
 
-    public FireStationModel updateFireStation(FireStationModel fireStationModel){
+    public FireStationModel updateFireStation(FireStationModel fireStationModel) {
         data.getFireStations().put(fireStationModel.getId(), fireStationModel);
         return fireStationModel;
     }
