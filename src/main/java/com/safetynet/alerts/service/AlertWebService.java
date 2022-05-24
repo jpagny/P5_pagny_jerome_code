@@ -4,6 +4,7 @@ import com.safetynet.alerts.dto.*;
 import com.safetynet.alerts.model.FireStationModel;
 import com.safetynet.alerts.model.MedicalRecordModel;
 import com.safetynet.alerts.model.PersonModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.StreamSupport;
 
+@Slf4j
 @Service
 public class AlertWebService implements IAlertWebService {
 
@@ -35,7 +37,7 @@ public class AlertWebService implements IAlertWebService {
                 listEmail.add(person.getEmail());
             }
         });
-
+        log.info("Request get email successful !");
         return listEmail;
     }
 
@@ -65,6 +67,7 @@ public class AlertWebService implements IAlertWebService {
                         }
                     });
 
+            log.info("Request get list persons and number fire station by address successful !");
             return new FireDTO(address, fireStation.get().getStation(), listHouseholdDTO);
         }
 
@@ -98,6 +101,7 @@ public class AlertWebService implements IAlertWebService {
 
                 });
 
+        log.info("Request get information person successful !");
         return listOfPersonInfos;
     }
 
@@ -124,6 +128,7 @@ public class AlertWebService implements IAlertWebService {
                     }
                 });
 
+        log.info("Request get list children successful !");
         return listOfChildren;
     }
 
@@ -141,6 +146,7 @@ public class AlertWebService implements IAlertWebService {
                     });
         }
 
+        log.info("Request get list phone number by fire station number successful !");
         return listOfPhoneNumber;
     }
 
@@ -181,6 +187,7 @@ public class AlertWebService implements IAlertWebService {
                     householdFireStationDTO.add(new HouseholdFireStationDTO(numberStation, listOfPersons, countAdultPersons, countChildPersons));
                 });
 
+        log.info("Request get list household by fire station successful !");
         return householdFireStationDTO;
     }
 
@@ -216,6 +223,7 @@ public class AlertWebService implements IAlertWebService {
                             listHouseholdFloodDto.add(new HouseholdFloodDTO(address, String.valueOf(number), listOfPersonFloodDTO));
                         }));
 
+        log.info("Request get list person by fire stations successful !");
         return listHouseholdFloodDto;
     }
 

@@ -23,7 +23,7 @@ public class MedicalRecordModel {
     }
 
     public MedicalRecordModel(String theFirstName, String theLastName, String theBirthdate, List<String> theMedications, List<String> theAllergies) {
-        id = UUID.randomUUID().toString();
+        id = theFirstName.substring(0,3) + theLastName.substring(0,3);
         firstName = theFirstName;
         lastName = theLastName;
         birthdate = theBirthdate;
