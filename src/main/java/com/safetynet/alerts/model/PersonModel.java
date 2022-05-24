@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Locale;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,7 +28,7 @@ public class PersonModel {
                        final String theAddress, final String theCity,
                        final String theZip, final String thePhone,
                        final String theEmail) {
-        this.id = theFirstName.substring(0,3) + theLastName.substring(0,3);
+        this.id = theFirstName.toLowerCase() + theLastName.toLowerCase();
         this.firstName = theFirstName;
         this.lastName = theLastName;
         this.address = theAddress;

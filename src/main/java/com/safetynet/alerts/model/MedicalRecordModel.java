@@ -23,7 +23,7 @@ public class MedicalRecordModel {
     }
 
     public MedicalRecordModel(String theFirstName, String theLastName, String theBirthdate, List<String> theMedications, List<String> theAllergies) {
-        id = theFirstName.substring(0,3) + theLastName.substring(0,3);
+        id = theFirstName.toLowerCase() + theLastName.toLowerCase();
         firstName = theFirstName;
         lastName = theLastName;
         birthdate = theBirthdate;
