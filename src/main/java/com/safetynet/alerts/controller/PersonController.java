@@ -2,9 +2,10 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.PersonModel;
 import com.safetynet.alerts.service.PersonService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RestController
 public class PersonController {
 
@@ -43,6 +44,7 @@ public class PersonController {
             PersonModel personModelUpdated = new PersonModel(id, firstName, lastName, address, city, zip, phone, email);
 
             personService.updatePerson(personModelUpdated);
+
             return personModelUpdated;
 
         } else {
