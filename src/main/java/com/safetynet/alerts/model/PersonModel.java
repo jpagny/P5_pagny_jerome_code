@@ -28,7 +28,7 @@ public class PersonModel {
                        final String theAddress, final String theCity,
                        final String theZip, final String thePhone,
                        final String theEmail) {
-        this.id = UUID.randomUUID().toString();
+        this.id = theFirstName.substring(0,3) + theLastName.substring(0,3);
         this.firstName = theFirstName;
         this.lastName = theLastName;
         this.address = theAddress;
