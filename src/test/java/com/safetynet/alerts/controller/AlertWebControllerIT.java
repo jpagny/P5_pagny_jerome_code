@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {IntegrationTestConfig.class})
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class AlertWebControllerITTest {
+public class AlertWebControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
