@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
@@ -76,32 +77,81 @@ public class AlertWebService implements IAlertWebService {
 
     public List<PersonInfoDTO> getInformationPerson(String firstName, String lastName) {
 
+        List<PersonModel> listOfPersonModel = new ArrayList<>();
         List<PersonInfoDTO> listOfPersonInfos = new ArrayList<>();
 
-        StreamSupport.stream(personService.getPersons().spliterator(), false)
-                .filter(thePerson ->
-                        lastName.equalsIgnoreCase(thePerson.getLastName()))
-                .forEach(thePerson -> {
+        // only firstname
+        if (firstName != null && lastName == null) {
 
-                    Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+            listOfPersonModel = StreamSupport.stream(personService.getPersons().spliterator(), false)
+                    .filter(thePerson ->
+                            firstName.equalsIgnoreCase(thePerson.getFirstName()))
+                    .collect(Collectors.toList());
 
-                    if (medicalRecord.isPresent()) {
-                        String theFirstName = thePerson.getFirstName();
-                        String address = thePerson.getAddress();
-                        String city = thePerson.getCity();
-                        String zip = thePerson.getZip();
-                        String email = thePerson.getEmail();
-                        int age = medicalRecordService.getAge(medicalRecord.get());
-                        List<String> medications = medicalRecord.get().getMedications();
-                        List<String> allergies = medicalRecord.get().getAllergies();
+            // only lastname
+        } else if (firstName == null && lastName != null) {
+            String finalLastName = lastName;
+            listOfPersonModel = StreamSupport.stream(personService.getPersons().spliterator(), false)
+                    .filter(thePerson ->
+                            finalLastName.equalsIgnoreCase(thePerson.getLastName()))
+                    .collect(Collectors.toList());
 
-                        listOfPersonInfos.add(new PersonInfoDTO(theFirstName, lastName, age, address, city, zip, email, medications, allergies));
+            // firstname and lastname
+        } else if (firstName != null) {
+            String finalLastName = lastName;
+            listOfPersonModel = StreamSupport.stream(personService.getPersons().spliterator(), false)
+                    .filter(thePerson -> firstName.equalsIgnoreCase(thePerson.getFirstName()) &&
+                            finalLastName.equalsIgnoreCase(thePerson.getLastName()))
+                    .collect(Collectors.toList());
+        } else {
+            log.error("FirstName and LastName are empty !");
+        }
 
-                    }
+        if ( !listOfPersonModel.isEmpty() ) {
 
-                });
+            if (lastName == null) {
+                lastName = listOfPersonModel.get(0).getLastName();
+            }
 
-        log.info("Request get information person successful !");
+            String finalLastName = lastName;
+            List<PersonModel> finalListOfPersonModel = listOfPersonModel;
+
+            // list all persons which have the same lastname
+            StreamSupport.stream(personService.getPersons().spliterator(), false)
+                    .filter(thePerson ->
+                            finalLastName.equalsIgnoreCase(thePerson.getLastName()))
+                    .forEach(thePerson -> {
+                        if (!finalListOfPersonModel.contains(thePerson)) {
+                            finalListOfPersonModel.add(thePerson);
+                        }
+                    });
+
+            finalListOfPersonModel.forEach(thePerson -> {
+
+                Optional<MedicalRecordModel> medicalRecord = medicalRecordService.getMedicalRecordByPerson(thePerson);
+
+                if (medicalRecord.isPresent()) {
+                    String theFirstName = thePerson.getFirstName();
+                    String theLastName = thePerson.getLastName();
+                    String address = thePerson.getAddress();
+                    String city = thePerson.getCity();
+                    String zip = thePerson.getZip();
+                    String email = thePerson.getEmail();
+                    int age = medicalRecordService.getAge(medicalRecord.get());
+                    List<String> medications = medicalRecord.get().getMedications();
+                    List<String> allergies = medicalRecord.get().getAllergies();
+
+                    listOfPersonInfos.add(new PersonInfoDTO(theFirstName, theLastName, age, address, city, zip, email, medications, allergies));
+                }
+
+            });
+
+            log.info("Request get information person successful !");
+
+        } else {
+            log.error("Can't found person");
+        }
+
         return listOfPersonInfos;
     }
 
