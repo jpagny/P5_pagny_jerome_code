@@ -27,7 +27,7 @@ public class AlertWebController {
     }
 
     @GetMapping("/personInfo")
-    public List<PersonInfoDTO> getInformationPerson(@RequestParam String firstName, @RequestParam String lastName) {
+    public List<PersonInfoDTO> getInformationPerson(@RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName) {
         return alertWebService.getInformationPerson(firstName, lastName);
     }
 
